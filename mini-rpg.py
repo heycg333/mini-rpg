@@ -7,6 +7,7 @@ import streamlit.components.v1 as components
 import pandas as pd
 import numpy as np
 
+#testing github edit
 
 # with open("battle_music.mp3", "rb") as audio_file:
 #     st.audio(audio_file.read(), format="audio/mp3")
@@ -1321,6 +1322,7 @@ elif step == "w_room_table":
 
 # === TRIAL OF LIGHT NORTHWEST ===
 elif step == "trial_of_names":
+    scene_image()
     print("This chamber has 4 pillars, each with a stone sconce facing the center of the room")
     print("In the center a pedestal instructs - 'Light returns in rhythm'")
     print("The back wall displays a mural of warriors battling a dragon")
@@ -1340,12 +1342,47 @@ elif step == "nw_room_explore":
 
     radio_form("Choose - ", list(nw_room_explore_options.keys()), key = "nw_room_explore_choice", next_step= None, mapping = nw_room_explore_options)
 
-elif step == "nw_room_table":
-    st.write("A stone scale, perfectly level. Etched on the base it reads - ")
-    st.write("Blade and bone, equal in death. Wood tips the balance")        
+elif step == "nw_room_pillars":
 
-    button("Continue", next_step= "w_room_explore")
+    nw_room_pillars_options = {
+        "1 - step on Kellumn Ironhand": "w_room_incorrect_choice",
+        "2 - step on Ser Bryn of the Vale": "w_room_incorrect_choice",
+        "3 - step on Kael the Nameless": "w_room_correct_choice",
+        "4 - step on Durek Flameborn": "w_room_incorrect_choice",
+        "5 - back away": "w_room_explore"
+    }
+    st.write("In the center of the plates an inscription reads 'Honor the Dragon Slayer'")
+    radio_form("Choose - ", list(w_room_plates_options.keys()), key = "w_room_plates_choice", next_step= None, mapping = w_room_plates_options)
+    st.write("WARNING - incorrect selections have consequence")
 
+elif step == "nw_room_incorrect_choice":
+    sfx = SoundEffectManager()
+    print("🔥" * 15)
+    print("The last sconce belches flame back at you, searing your arm. All flames extinguish")
+    print("A voice whispers - 'You chose poorly'\n")
+    hero.take_dmg(5)
+    sfx.play("you-chose-poorly")
+
+    button("Continue", next_step= "nw_room_pillars")
+    
+elif step == "nw_room_correct_choice":
+    print("\nThe lit sconces suddenly blaze bright blue flame, activating runes on the pillars")
+    button("Continue", next_step= "puzzle_trigger")
+
+
+elif step == "nw_room_torchstand":
+    print("Runes etched along its base glow faintly when touched")
+    print("A faint voice whispers: 'From shadow we watch, through fire we strike'")
+
+    button("Continue", next_step= "nw_room_explore")
+
+elif step == "nw_room_mural":
+    print("The battle scene shows four warriors, three of which are named:")
+    print("In the foreground, a bloodied Durek Flameborn holds a fallen Kellum Ironhand in his arms")
+    print("To the left Ser Bryn lies in the grass, body blackened from dragon fire")
+    print("The unnamed figure strikes the dragon alone")
+
+    button("Continue", next_step= "nw_room_explore")
 
 
 
