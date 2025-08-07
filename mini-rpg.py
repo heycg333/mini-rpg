@@ -6,6 +6,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 import pandas as pd
 import numpy as np
+from typing import Optional
 
 #testing github edit
 
@@ -595,7 +596,7 @@ def combat_radio(label, options, key, next_step, mapping=None):
     return False
     
 
-def button(label, next_step = None, extra_state: dict = None, key= None):
+def button(label, next_step = None, extra_state: Optional[dict]= None, key= None):
     if st.button(label, key=key or label): # use custom key or default to label
         if next_step:
             st.session_state.step = next_step
@@ -605,7 +606,7 @@ def button(label, next_step = None, extra_state: dict = None, key= None):
         # st.audio("music/village-background.mp3", format="audio/mpeg", loop= True, autoplay=True)
         st.rerun()
 
-def combat_button(label, extra_state: dict = None):
+def combat_button(label, extra_state: Optional[dict] = None):
     if st.button(label):
         if extra_state:
             for k, v in extra_state.items():
@@ -1344,21 +1345,43 @@ elif step == "nw_room_explore":
 
 elif step == "nw_room_pillars":
 
-    nw_room_pillars_options = {
-        "1 - step on Kellumn Ironhand": "w_room_incorrect_choice",
-        "2 - step on Ser Bryn of the Vale": "w_room_incorrect_choice",
-        "3 - step on Kael the Nameless": "w_room_correct_choice",
-        "4 - step on Durek Flameborn": "w_room_incorrect_choice",
-        "5 - back away": "w_room_explore"
+    nw_room_pillar_options = {
+        "1 - A rising sun": "nw_room_incorrect_choice",
+        "2 - A setting sun": "nw_room_pillars_2",
+        "3 - A crescent moon": "nw_room_incorrect_choice",
+        "4 - A bright, full sun": "nw_room_incorrect_choice",
+        "5 - back away": "nw_room_explore"
     }
-    st.write("In the center of the plates an inscription reads 'Honor the Dragon Slayer'")
-    radio_form("Choose - ", list(w_room_plates_options.keys()), key = "w_room_plates_choice", next_step= None, mapping = w_room_plates_options)
+    st.write("Above each sconce is a symbol")
+    radio_form("Light sconce - ", list(nw_room_pillar_options.keys()), key = "nw_room_pillar_choice", next_step= None, mapping = nw_room_pillar_options)
     st.write("WARNING - incorrect selections have consequence")
+
+elif step == "nw_room_pillars_2":
+
+    nw_room_pillar2_options = {
+        "1 - A rising sun": "nw_room_incorrect_choice",
+        "3 - A crescent moon": "nw_room_pillars_3",
+        "4 - A bright, full sun": "nw_room_incorrect_choice",
+        "5 - back away": "nw_room_explore"
+    }
+    radio_form("Light next sconce - ", list(nw_room_pillar2_options.keys()), key = "nw_room_pillar2_choice", next_step= None, mapping = nw_room_pillar2_options)
+    st.write("WARNING - incorrect selections have consequence")
+
+elif step == "nw_room_pillars_3":
+
+    nw_room_pillar3_options = {
+        "1 - A rising sun": "nw_room_correct_choice",
+        "4 - A bright, full sun": "nw_room_incorrect_choice",
+        "5 - back away": "nw_room_explore"
+    }
+    radio_form("Light next sconce - ", list(nw_room_pillar3_options.keys()), key = "nw_room_pillar3_choice", next_step= None, mapping = nw_room_pillar3_options)
+    st.write("WARNING - incorrect selections have consequence")
+
 
 elif step == "nw_room_incorrect_choice":
     sfx = SoundEffectManager()
     print("🔥" * 15)
-    print("The last sconce belches flame back at you, searing your arm. All flames extinguish")
+    print("The sconce belches flame back at you, searing your arm. The flames extinguish")
     print("A voice whispers - 'You chose poorly'\n")
     hero.take_dmg(5)
     sfx.play("you-chose-poorly")
@@ -1366,7 +1389,8 @@ elif step == "nw_room_incorrect_choice":
     button("Continue", next_step= "nw_room_pillars")
     
 elif step == "nw_room_correct_choice":
-    print("\nThe lit sconces suddenly blaze bright blue flame, activating runes on the pillars")
+    st.write("You walk over and light the last remaining pillar")
+    print("The lit sconces suddenly blaze bright blue flame, activating runes on the pillars")
     button("Continue", next_step= "puzzle_trigger")
 
 
@@ -1386,19 +1410,17 @@ elif step == "nw_room_mural":
 
 
 
+# === TRIAL OF BALANCE NORTHEAST ===
 
+elif step == "trial_of_balance":
+    scene_image()
+    print("\nA huge ancient scale sits in the center of the room, one side hanging lower than the other")
+    print("In front sits a table with four stone blocks, each with symbols on their face")
+    print("On the ground nearby are scattered remains")
+    print("A pedestal on the far wall displays an urn")
+    print("The walls are adorned with various carvings")
 
-
-
-
-
-
-
-
-
-
-
-
+    button("Continue", next_step= "ne_room_explore")
 
 elif step == "ne_room_explore":
 
@@ -1413,6 +1435,99 @@ elif step == "ne_room_explore":
     radio_form("Choose - ", list(ne_room_explore_options.keys()), key = "ne_room_explore_choice", next_step= None, mapping = ne_room_explore_options)
 
 
+elif step == "ne_room_scale":
+
+    ne_room_scale_options = {
+        "1 - Arrow": "ne_room_incorrect_choice",
+        "2 - Sword": "ne_room_picked_sword",
+        "3 - Shield": "ne_room_incorrect_choice",
+        "4 - Bone": "ne_room_picked_bone",
+        "5 - back away": "ne_room_explore"
+    }
+    print("Carvings along the beam depict warriors being weighed. The scale has one square indent on each side")
+    print("The stone blocks on the table seem perfectly sized to fit the indents on the scale")
+    print("\nEach block has a symbol")
+    radio_form("Place a block on the scale - ", list(ne_room_scale_options.keys()), key = "ne_room_scale_choice", next_step= None, mapping = ne_room_scale_options)
+    st.write("WARNING - incorrect selections have consequence")
+
+elif step == "ne_room_picked_sword":
+
+    ne_room_scale2_options = {
+        "1 - Arrow": "ne_room_incorrect_choice",
+        "3 - Shield": "ne_room_incorrect_choice",
+        "4 - Bone": "ne_room_correct_choice",
+        "5 - back away": "ne_room_explore"
+    }
+    radio_form("Place block on the scale's other side - ", list(ne_room_scale2_options.keys()), key = "ne_room_scale2_choice", next_step= None, mapping = ne_room_scale2_options)
+    st.write("WARNING - incorrect selections have consequence")
+
+elif step == "ne_room_picked_bone":
+
+    ne_room_scale3_options = {
+        "1 - Arrow": "ne_room_incorrect_choice",
+        "2 - Sword": "ne_room_correct_choice",
+        "3 - Shield": "ne_room_incorrect_choice",
+        "5 - back away": "ne_room_explore"
+    }
+    radio_form("Place block on the scale's other side - ", list(ne_room_scale3_options.keys()), key = "ne_room_scale3_choice", next_step= None, mapping = ne_room_scale3_options)
+    st.write("WARNING - incorrect selections have consequence")
+
+
+elif step == "ne_room_incorrect_choice":
+    sfx = SoundEffectManager()
+    print("⚡" * 15)
+    print("A vicious shock of electricity hits you like a lightning bolt. The scale remains unbalanced")
+    print("A voice whispers - 'You chose poorly'\n")
+    hero.take_dmg(5)
+    sfx.play("you-chose-poorly")
+
+    button("Continue", next_step= "ne_room_scale")
+    
+elif step == "ne_room_correct_choice":
+    st.write("The blocks click into place, their symbols glow as the scales become perfectly balanced")
+    button("Continue", next_step= "puzzle_trigger")
+
+
+elif step == "ne_room_urn":
+    print("\nDecorated with the symbol of the dragon slayer’s order — but faded")
+    print("Smells faintly of charred wood and herbs.")
+    print("All that remains of a worn away name scratched on the bottom: ‘K’")
+
+    button("Continue", next_step= "ne_room_explore")
+
+elif step == "ne_room_remains":
+    print("\nA leather breastplate lies beside old bones")
+    print("Someone died attempting this puzzle")
+
+    if not st.session_state.got_item_ne_room:
+        print("Well, the leather is in fair shape - no sense it going to waste")
+        print("\nGAIN LEATHER ARMOR")
+        st.session_state.got_item_ne_room = True
+        hero.armor = "Leather Armor"
+        hero.defense += 2
+        hero.equipment_check()
+
+    button("Continue", next_step= "ne_room_explore")
+
+elif step == "ne_room_walls":
+    print("\nCarving of a song with symbols above it, suggesting tone/musical order")
+    print("Four symbols above verses I-IV: silence, fire, stone, blade")
+    print("Below is scratched - 'The song of blade and beast'")
+
+    button("Continue", next_step= "ne_room_explore")
+
+
+# === TRIAL OF SOUND EAST ===
+elif step == "trial_of_sound":
+    scene_image()
+    print("\nFour stone chimes hang at the far end of the chamber, in order labeled I, II, III, IV")
+    print("Around the room are mural panels matching the numbers on the chimes I-IV")
+    print("You notice an arrow stuck in the wall between two chimes")
+    print("A painting hangs alone on the south wall")
+
+    button("Continue", next_step= "e_room_explore")
+
+
 elif step == "e_room_explore":
 
     e_room_explore_options = {
@@ -1423,6 +1538,79 @@ elif step == "e_room_explore":
         "5 - Leave room": "tomb_explore"
     }
     radio_form("Choose - ", list(e_room_explore_options.keys()), key = "e_room_explore_choice", next_step= None, mapping = e_room_explore_options)
+
+elif step == "e_room_chimes":
+
+    e_room_chime_options = {
+        "1 - Chime I": "e_room_incorrect_choice",
+        "2 - Chime II": "e_e_room_incorrect_choice",
+        "3 - Chime III": "e_room_chimes2",
+        "4 - Chime IV": "e_room_incorrect_choice",
+        "5 - back away": "e_room_explore"
+    }
+    print("A plaque on the floor states: 'Recount the battle in song'")
+    radio_form("Ring chime - ", list(e_room_chime_options.keys()), key = "e_room_chime_choice", next_step= None, mapping = e_room_chime_options)
+    st.write("WARNING - incorrect selections have consequence")
+
+elif step == "e_room_chimes2":
+
+    e_room_chime2_options = {
+        "1 - Chime I": "e_room_chimes3",
+        "2 - Chime II": "e_e_room_incorrect_choice",
+        "4 - Chime IV": "e_room_incorrect_choice",
+        "5 - back away": "e_room_explore"
+    }
+    print("A plaque on the floor states: 'Recount the battle in song'")
+    radio_form("Ring chime - ", list(e_room_chime2_options.keys()), key = "e_room_chime2_choice", next_step= None, mapping = e_room_chime2_options)
+    st.write("WARNING - incorrect selections have consequence")
+
+elif step == "e_room_chimes3":
+
+    e_room_chime3_options = {
+        "2 - Chime II": "e_e_room_incorrect_choice",
+        "4 - Chime IV": "e_room_correct_choice",
+        "5 - back away": "e_room_explore"
+    }
+    print("A plaque on the floor states: 'Recount the battle in song'")
+    radio_form("Ring chime - ", list(e_room_chime3_options.keys()), key = "e_room_chime3_choice", next_step= None, mapping = e_room_chime3_options)
+    st.write("WARNING - incorrect selections have consequence")
+
+
+elif step == "e_room_incorrect_choice":
+    sfx = SoundEffectManager()
+    print("⚠️ " * 10)
+    print("A discordant sound assaults your ears, the cacophony nearly unbearable before finally subsiding")
+    print("A voice whispers - 'You chose poorly'")
+    hero.take_dmg(5)
+    sfx.play("you-chose-poorly")
+
+    button("Continue", next_step= "nw_room_pillars")
+    
+elif step == "e_room_correct_choice":
+    st.write("You walk over and ring the final chime")
+    print("\nThe echoes of the chimes fill the chamber with harmony and the murals begin to glow")
+    button("Continue", next_step= "puzzle_trigger")
+
+
+elif step == "e_room_arrow":
+    print("\nThe half-rotted arrow has black fletching — a ranger's mark")
+    print("Carved beside it: 'Missed my note. Won’t again.'")
+
+    button("Continue", next_step= "e_room_explore")
+
+elif step == "e_room_murals":
+    print("\nI - The slayer dodges flame as he lunges forward, sword drawn")
+    print("II - The dragon roars, the slayer mid-swing, sword glowing")
+    print("III - The slayer stands alone, head bowed")
+    print("IV  - The slayer crouched behind a huge shield, the dragon clawing at it")
+
+    button("Continue", next_step= "e_room_explore")
+
+elif step == "e_room_painting":
+    print("\nA painting of a torch being passed from hand to hand in different phases of light (dusk, night, dawn, morning)")
+    print("The caption reads - 'Light returns in rhythm'")
+
+    button("Continue", next_step= "e_room_explore")
 
 
 elif step == "tomb_door_open":
