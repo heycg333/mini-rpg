@@ -672,7 +672,7 @@ def dragon_drops():
 
 
 if "step" not in st.session_state:
-    st.session_state.step = "tomb_entrance"  #"intro"
+    st.session_state.step = "ranger_intro"  #"intro"
 step = st.session_state.step
 
 scene_music()
@@ -1701,22 +1701,97 @@ elif step == "slayer_sword_2":
 
 
 # === RANGERS QUEST ===
+
 elif step == "ranger_intro":
-    print("\nThe rangers live secluded in the forest to the north, self-imposed guardians of the green")
-    print("It's a straight shot north to the forest border, but navigating through the trees will be a challenge")
+    st.session_state.lost_in_forest = True
+    st.session_state.lost_turn = 0
+    st.session_state.right_path = 0
+    st.session_state.forest_got_sword = st.session_state.forest_got_shield = st.session_state.forest_got_armor = False
+    st.session_state.forest_encounter1 = st.session_state.forest_encounter2 = st.session_state.forest_encounter6 = st.session_state.forest_encounter8 = st.session_state.forest_encounter9 = False 
+
+    st.write("The rangers live secluded in the forest to the north, self-imposed guardians of the green")
+    st.write("It's a straight shot north to the forest border, but navigating through the trees will be a challenge")
 
     button("Continue", next_step="forest_arrival")
 
 elif step == "forest_arrival":
-    print("You arrive at the forest edge. The trees rise like silent sentinels, thick and ancient, their bark gnarled with age.")
-    print("Shafts of pale sunlight pierce the canopy in narrow beams, casting shifting patterns on the mossy ground.")
-    print("A hush blankets the woods — not peace, but the stillness of something watching")
-    pause()
-    print("You step inside and head down the path")
+    scene_image()
+    st.write("You arrive at the forest edge")
+    st.write("The trees rise like silent sentinels, thick and ancient, their bark gnarled with age.")
+    st.write("Shafts of pale sunlight pierce the canopy in narrow beams, casting shifting patterns on the mossy ground.")
+    st.write("A hush blankets the woods — not peace, but the stillness of something watching")
+    
+    st.session_state.right_choice = random.randint(0,1)
+    st.session_state.random_nav_option = random.randint(0,3)
 
-    # === FOREST MAZE ===
+
+    button("Enter the forest path", next_step= "forest_maze_nav_options")
+
+# === FOREST MAZE ===
+
+elif step == "forest_maze_nav_options": 
+    sfx = SoundEffectManager()
+
+    if "maze_nav_selected" not in st.session_state:
+        st.session_state.maze_nav_selected = False
+    
+
+    nav_option_list = [
+        ["You come to a fork in the path - which way do you go?", "Left", "Right"], 
+        ["The path diverges ahead - which way do you go?", "Uphill", "Downhill"], 
+        ["A path splits off to the right - it seems darker in that direction", "Take path", "Continue on"], 
+        ["That tree looks really familiar - were you here already?", "Backtrack", "Continue on"]
+    ]
+
+    st.write("🌲" * 25)
+    st.write("random nav opt", st.session_state.random_nav_option)
+    st.write("right choice", st.session_state.right_choice)
+    st.write("maze nav selected", st.session_state.maze_nav_selected)
+    st.write("lost turn" , st.session_state.lost_turn)
+    st.write("right path", st.session_state.right_path)
+
+    if st.session_state.lost_turn == 8 or st.session_state.right_path >= 4:
+        button("A twig snaps to your right...", next_step= "maze_boss_intro")
+   
+    else:
+        if not st.session_state.maze_nav_selected:
+            #sfx.play("footsteps")
+
+            extra = {
+                "maze_nav_selected": True,
+                "lost_turn": st.session_state.lost_turn + 1
+            }
+
+            if st.session_state.right_choice:
+                extra["right_path"] = st.session_state.right_path + 1
+
+            nav = nav_option_list[st.session_state.random_nav_option]
+            st.write(nav[0])
+            button(nav[1], next_step= "maze_random_encounter", extra_state=extra)
+            button(nav[2], next_step= "maze_random_encounter", extra_state=extra)
 
 
+
+elif step == "maze_random_encounter":
+    st.write("maze random encounter")
+    st.write("maze nav selected", st.session_state.maze_nav_selected)
+    st.write("lost turn" , st.session_state.lost_turn)
+    st.write("right path", st.session_state.right_path)
+
+    st.session_state.right_choice = random.randint(0,1)
+    st.session_state.random_nav_option = random.randint(0,3)
+
+    button("Continue", next_step="forest_maze_nav_options", extra_state= {"maze_nav_selected": False})
+
+elif step == "forest_maze_fork":
+    ""
+
+elif step == "maze_boss_intro":
+    st.write("Squinting in the gloom beyond the thick brush, you can't make anything out")
+    st.write("Suddenly a large deer bursts out and runs past you. You stumble backwards and find yourself suspended between two trees") 
+    pause("press Enter to pull yourself free")
+    st.write("You lurch forward and find you can't move. A web, nearly invisible, clings to your limbs like molasses.")
+    st.write("Above you, something clicks its mandibles in the dark. It sounds massive. You’ve got seconds.")
 
 
 elif step == "return_home":
