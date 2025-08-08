@@ -75,6 +75,12 @@ def scene_image():
         "tomb_door_open": "images/slayer-burial-chamber.webp",
         "slayer_sword": "images/slayer-burial-chamber.webp",
         "slayer_sword_2": "images/slayer-burial-chamber.webp",
+        "forest_arrival": "images/forest-entrance.webp",
+        "maze_encounter_skeleton": "images/forest-skeleton.webp",
+        "maze_encounter_altar": "images/forest-altar.webp",
+        "maze_encounter_slipped": "images/forest-slipped.webp",
+        "maze_boss_intro2": "images/stuck-in-web.webp",
+        "maze_ranger_trap": "images/ranger-trap.webp"
 
     }
 
@@ -89,7 +95,12 @@ def combat_image():
         "Road Bandit": "images/road-bandit.webp",
         "Durgrin": "images/durgrin.webp",
         "Troll": "images/troll.webp",
-        "Goblin": "images/goblin.webp"
+        "Goblin": "images/goblin.webp",
+        "Giant Spider": "images/giant-spider.webp",
+        "Forest Bandit": "images/forest-bandit.webp",
+        "Spider": "images/spider.webp",
+        "Orc": "images/orc.webp",
+        "Forest Wolf": "images/forest-wolf.webp",
     }
 
     if monster in image_list:
@@ -133,10 +144,6 @@ def scene_music():
         "dwarf_rewards2": "music/quest-victory.mp3",
         "tomb_puzzle": "music/tomb_puzzle.mp3",
         "slayer_sword_room": "music/slayer_sword_room.mp3",
-        "forest_maze": "music/forest_maze.mp3",
-        "ranger_village": "music/ranger_village.mp3",
-        "final battle prep": "music/final-battle-prep.mp3",
-        "game_over": "music/game-over.mp3", 
         "slayer_intro": "music/slayer-tomb-intro.mp3",
         "slayer_road_combat": "music/slayer-tomb-intro.mp3",
         "tomb_arrival": "music/slayer-tomb-intro.mp3",
@@ -189,7 +196,16 @@ def scene_music():
         "tomb_door_open": "music/slayer-tomb-end.mp3",
         "slayer_sword": "music/slayer-tomb-end.mp3",
         "slayer_sword_2": "music/slayer-tomb-end.mp3",
-
+        "ranger_intro": "music/forest-maze.mp3",
+        "forest_arrival": "music/forest-maze.mp3",
+        "forest_maze_nav_options": "music/forest-maze.mp3",
+        "maze_random_encounter": "music/forest-maze.mp3",
+        "maze_boss_intro": "music/caught-in-web.mp3",
+        "maze_boss_intro2": "music/caught-in-web.mp3",
+        "maze_ranger_trap": "music/forest-maze.mp3",
+        "ranger_village": "music/ranger-village.mp3",
+        "final battle prep": "music/final-battle-prep.mp3",
+        "game_over": "music/game-over.mp3", 
 
 
         "puzzle_trigger": "music/forest-maze.mp3",
@@ -354,8 +370,8 @@ class SoundEffectManager:
             "low_monster_roar": "sfx/low-monster-roar.mp3",
             "monster_attack": "sfx/monster-attack.mp3",
             "monster_roar": "sfx/monster-roar.mp3",
-            "you_chose_poorly": "sfx/you-chose-poorly.mp3"
-
+            "you_chose_poorly": "sfx/you-chose-poorly.mp3",
+            "footsteps": "sfx/footsteps.mp3"
         }
 
     def play(self, effect_name: str):
@@ -550,6 +566,9 @@ hero = st.session_state.hero
 if "wolf" not in st.session_state:
     st.session_state.wolf = Monsters(hero, "Wolf", 12, 2, 2, 4, 0, False, "none", 0, "", "")
 wolf = st.session_state.wolf
+if "forestwolf" not in st.session_state:
+    st.session_state.forestwolf = Monsters(hero, "Forest Wolf", 12, 2, 2, 4, 0, False, "none", 0, "", "")
+forestwolf = st.session_state.forestwolf
 if "roadbandit" not in st.session_state:
     st.session_state.roadbandit = Monsters(hero, "Road Bandit", 14, 3, 1, 3, 0, False, "none", 0, "", "")
 roadbandit = st.session_state.roadbandit
@@ -843,6 +862,15 @@ elif step == "combat_victory":
             hero.shield = "Reinforced Shield"
             hero.defense += 1
             hero.equipment_check()
+
+        elif monster == orc and not st.session_state.forest_got_sword:
+            print("\nOne of the orcs has a steel sword strapped to his back. This is not orc-forged")
+            st.write("They must have claimed it from a past victim")
+            print("(GAIN LONGSWORD)")
+            hero.sword = "Longsword"
+            hero.atk += 2
+            hero.equipment_check()
+            st.session_state.forest_got_sword = True
 
 
 
@@ -1734,7 +1762,8 @@ elif step == "forest_maze_nav_options":
 
     if "maze_nav_selected" not in st.session_state:
         st.session_state.maze_nav_selected = False
-    
+    if "random_encounter" not in st.session_state:
+        st.session_state.random_encounter = 0
 
     nav_option_list = [
         ["You come to a fork in the path - which way do you go?", "Left", "Right"], 
@@ -1755,8 +1784,8 @@ elif step == "forest_maze_nav_options":
    
     else:
         if not st.session_state.maze_nav_selected:
-            #sfx.play("footsteps")
-
+            sfx.play("footsteps")
+            st.session_state.random_encounter = random.randint(1,20)
             extra = {
                 "maze_nav_selected": True,
                 "lost_turn": st.session_state.lost_turn + 1
@@ -1780,18 +1809,50 @@ elif step == "maze_random_encounter":
 
     st.session_state.right_choice = random.randint(0,1)
     st.session_state.random_nav_option = random.randint(0,3)
+    encounter = st.session_state.random_encounter
+
+    st.session_state.combat_round = 1
+
+    if encounter == 1 and not st.session_state.forest_encounter1:
+        print("\nYou find a skeleton in tattered clothing on the ground leaning against a tree")
+        print("Vines wrap around in a chilling embrace, claiming it. The tree may own the body, but you claim the contents of his satchel")
+        print("GAIN 3 10hp health potions")
+        hero.potion += 3
+        st.session_state.forest_encounter1 = True 
+        hero.equipment_check()
+    
+    elif encounter == 2 and not st.session_state.forest_encounter2:
+        print("\nYou stumble upon a crumbling altar covered in vines and old runes. As you touch it, a warm light courses through your body.")
+        hero.max_hp += 5
+        hero.hp = hero.max_hp
+        print(f"MAX HP increased by 5 --- {hero.name} hp now {hero.hp}")
+        st.session_state.forest_encounter2 = True 
+
+    elif encounter in (3,4):
+        print("\nA guttural voice breaks the silence. Two orcs in leather armor step out from the trees, blades drawn, eyes full of malice.")
+        st.session_state.monster = st.session_state.orc
+
+        button("Begin Combat", next_step="combat_hero", extra_state={"next_step": "forest_maze_nav_options"})
+
+    
+
+
 
     button("Continue", next_step="forest_maze_nav_options", extra_state= {"maze_nav_selected": False})
 
-elif step == "forest_maze_fork":
-    ""
 
 elif step == "maze_boss_intro":
     st.write("Squinting in the gloom beyond the thick brush, you can't make anything out")
     st.write("Suddenly a large deer bursts out and runs past you. You stumble backwards and find yourself suspended between two trees") 
     pause("press Enter to pull yourself free")
+
+elif step == "maze_boss_intro2":
+    scene_image()
     st.write("You lurch forward and find you can't move. A web, nearly invisible, clings to your limbs like molasses.")
     st.write("Above you, something clicks its mandibles in the dark. It sounds massive. You’ve got seconds.")
+
+elif step == "maze_ranger_trap":
+    ""
 
 
 elif step == "return_home":
