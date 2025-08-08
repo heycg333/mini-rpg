@@ -80,7 +80,12 @@ def scene_image():
         "maze_encounter_altar": "images/forest-altar.webp",
         "maze_encounter_slipped": "images/forest-slipped.webp",
         "maze_boss_intro2": "images/stuck-in-web.webp",
-        "maze_ranger_trap": "images/ranger-trap.webp"
+        "maze_ranger_trap": "images/ranger-trap.webp",
+        "": "images/ranger-camp-arrival.webp",
+        "": "images/ranger-leader-laugh.webp",
+        "": "images/ranger-leader-smile.webp",
+        "": "images/ranger-leader-disappointed.webp",
+        "": "images/ranger-farerwell.webp"
 
     }
 
@@ -471,15 +476,16 @@ class Hero: #hero stats and combat methods
             st.write("💀💀💀💀💀💀💀💀")
             st.write(f"{self.name} has perished")
             st.write("💀💀💀💀💀💀💀💀")
-            gameover(hero)
+            # gameover(hero)
         else:
             st.write(f"{self.name} has {self.hp} hp left")
 
 
 class Monsters: #enemy stats and combat actions
-    def __init__(self, hero, name, hp, atk, atkmin, atkmax, defense, poisoned, special, specdmg, specprep, specdesc):
+    def __init__(self, hero, name, maxhp, hp, atk, atkmin, atkmax, defense, poisoned, special, specdmg, specprep, specdesc):
         self.hero = hero
         self.name = name
+        self.max_hp = maxhp
         self.hp = hp
         self.atk = atk
         self.atk_min_base = atkmin
@@ -564,37 +570,37 @@ if "hero" not in st.session_state:
 hero = st.session_state.hero
 
 if "wolf" not in st.session_state:
-    st.session_state.wolf = Monsters(hero, "Wolf", 12, 2, 2, 4, 0, False, "none", 0, "", "")
+    st.session_state.wolf = Monsters(hero, "Wolf", 12, 12, 2, 2, 4, 0, False, "none", 0, "", "")
 wolf = st.session_state.wolf
 if "forestwolf" not in st.session_state:
-    st.session_state.forestwolf = Monsters(hero, "Forest Wolf", 12, 2, 2, 4, 0, False, "none", 0, "", "")
+    st.session_state.forestwolf = Monsters(hero, "Forest Wolf", 12, 12, 2, 2, 4, 0, False, "none", 0, "", "")
 forestwolf = st.session_state.forestwolf
 if "roadbandit" not in st.session_state:
-    st.session_state.roadbandit = Monsters(hero, "Road Bandit", 14, 3, 1, 3, 0, False, "none", 0, "", "")
+    st.session_state.roadbandit = Monsters(hero, "Road Bandit", 14, 14, 3, 1, 3, 0, False, "none", 0, "", "")
 roadbandit = st.session_state.roadbandit
 if "durgrin" not in st.session_state:
-    st.session_state.durgrin = Monsters(hero, "Durgrin", 14, 2, 2, 4, 0, False, "none", 0, "", "")
+    st.session_state.durgrin = Monsters(hero, "Durgrin", 14, 14, 2, 2, 4, 0, False, "none", 0, "", "")
 durgrin = st.session_state.durgrin
 if "troll" not in st.session_state:
-    st.session_state.troll = Monsters(hero, "Troll", 30, 2, 2, 5, 0, False, "RAMPAGE", 5, "is winding up for a devastating strike!", "roars and thrashes around wildly with his giant club")
+    st.session_state.troll = Monsters(hero, "Troll", 30, 30, 2, 2, 5, 0, False, "RAMPAGE", 5, "is winding up for a devastating strike!", "roars and thrashes around wildly with his giant club")
 troll = st.session_state.troll
 if "goblin" not in st.session_state:
-    st.session_state.goblin = Monsters(hero, "Goblin", 12, 3, 1, 4, 0, False, "none", 0, "", "")
+    st.session_state.goblin = Monsters(hero, "Goblin", 12, 12, 3, 1, 4, 0, False, "none", 0, "", "")
 goblin = st.session_state.goblin
 if "orc" not in st.session_state:
-    st.session_state.orc = Monsters(hero, "Orc", 13, 2, 2, 5, 0, False, "none", 0, "", "")
+    st.session_state.orc = Monsters(hero, "Orc", 13, 13, 2, 2, 5, 0, False, "none", 0, "", "")
 orc = st.session_state.orc
 if "spider" not in st.session_state:
-    st.session_state.spider = Monsters(hero, "Spider", 12, 3, 1, 3, 0, False, "none", 0, "", "")
+    st.session_state.spider = Monsters(hero, "Spider", 12, 12, 3, 1, 3, 0, False, "none", 0, "", "")
 spider = st.session_state.spider
 if "forestbandit" not in st.session_state:
-    st.session_state.forestbandit = Monsters(hero, "Forest Bandit", 12, 3, 2, 3, 0, False, "none", 0, "", "")
+    st.session_state.forestbandit = Monsters(hero, "Forest Bandit", 12, 12, 3, 2, 3, 0, False, "none", 0, "", "")
 forestbandit = st.session_state.forestbandit
 if "giantspider" not in st.session_state:
-    st.session_state.giantspider = Monsters(hero, "Giant Spider", 30, 4, 2, 6, 0, False, "Fang Leap", 5, "rears back hissing, ready to pounce!", "launches itself at you, fangs glinting, legs outstretched")
+    st.session_state.giantspider = Monsters(hero, "Giant Spider", 30, 30, 4, 2, 6, 0, False, "Fang Leap", 5, "rears back hissing, ready to pounce!", "launches itself at you, fangs glinting, legs outstretched")
 giantspider = st.session_state.giantspider
 if "dragon" not in st.session_state:
-    st.session_state.dragon = Monsters(hero, "Dragon", 75, 4, 3, 6, 1, False, "Fire Breath", 12, "stands and its throat begins to glow orange!", "spews flames that engulf you")
+    st.session_state.dragon = Monsters(hero, "Dragon", 75, 75, 4, 3, 6, 1, False, "Fire Breath", 12, "stands and its throat begins to glow orange!", "spews flames that engulf you")
 dragon = st.session_state.dragon
 
 
@@ -603,7 +609,7 @@ def pause(text = "Continue"):
 
 def gameover(hero):
     st.write(f"Is this the end of {hero.name}?")
-    button("Continue", next_step="game_over")
+    button("Continue...", next_step="game_over", key= "ending_hero_dead")
 
 
 def sleep_animation():
@@ -837,8 +843,11 @@ elif step == "combat_monster":
                 sfx.play("block")
         st.session_state.player_action_complete = False
         st.session_state.combat_round += 1
+    
+    if hero.hp <= 0:
+        gameover(hero)
 
-    if st.session_state.monster_action_complete:
+    elif st.session_state.monster_action_complete:
         button("Continue", next_step="combat_hero", extra_state={"monster_action_complete": False})
 
 elif step == "combat_victory":
@@ -846,6 +855,8 @@ elif step == "combat_victory":
     st.write("Victory!")
     monster = st.session_state.monster
     quest = st.session_state.quest
+
+    monster.hp = monster.max_hp
 
     if not st.session_state.got_rewards:
         if monster == roadbandit:
@@ -864,14 +875,31 @@ elif step == "combat_victory":
             hero.equipment_check()
 
         elif monster == orc and not st.session_state.forest_got_sword:
-            print("\nOne of the orcs has a steel sword strapped to his back. This is not orc-forged")
+            st.write("One of the orcs has a steel sword strapped to his back. This is not orc-forged")
             st.write("They must have claimed it from a past victim")
-            print("(GAIN LONGSWORD)")
+            st.write("(GAIN LONGSWORD)")
             hero.sword = "Longsword"
             hero.atk += 2
             hero.equipment_check()
             st.session_state.forest_got_sword = True
 
+        elif monster == spider and not st.session_state.forest_got_shield:
+            st.write("Below a body wrapped in webbing you notice a shield with solid metal plating circling the rim")
+            st.write("No sense it going to waste")
+            st.write("GAIN REINFORCED SHIELD")
+            hero.shield = "Reinforced Shield"
+            hero.defense += 1
+            hero.equipment_check()
+            st.session_state.forest_got_shield = True
+
+        elif monster == forestbandit and not st.session_state.forest_got_armor:
+            st.write("One of the bandits wears an impressive hardended leather breatplate")
+            st.write("(blood stains are easy to get out, right?)")
+            st.write("GAIN LEATHER ARMOR")
+            hero.armor = "Leather Armor"
+            hero.defense += 2
+            hero.equipment_check()
+            st.session_state.forest_got_armor = True
 
 
         st.session_state.got_rewards = True
@@ -1735,7 +1763,7 @@ elif step == "ranger_intro":
     st.session_state.lost_turn = 0
     st.session_state.right_path = 0
     st.session_state.forest_got_sword = st.session_state.forest_got_shield = st.session_state.forest_got_armor = False
-    st.session_state.forest_encounter1 = st.session_state.forest_encounter2 = st.session_state.forest_encounter6 = st.session_state.forest_encounter8 = st.session_state.forest_encounter9 = False 
+    st.session_state.forest_encounter1 = st.session_state.forest_encounter2 = st.session_state.forest_encounter6 = False 
 
     st.write("The rangers live secluded in the forest to the north, self-imposed guardians of the green")
     st.write("It's a straight shot north to the forest border, but navigating through the trees will be a challenge")
@@ -1764,6 +1792,8 @@ elif step == "forest_maze_nav_options":
         st.session_state.maze_nav_selected = False
     if "random_encounter" not in st.session_state:
         st.session_state.random_encounter = 0
+
+    st.session_state.forest_encounter89 = random.randint(0,9)
 
     nav_option_list = [
         ["You come to a fork in the path - which way do you go?", "Left", "Right"], 
@@ -1813,43 +1843,220 @@ elif step == "maze_random_encounter":
 
     st.session_state.combat_round = 1
 
-    if encounter == 1 and not st.session_state.forest_encounter1:
-        print("\nYou find a skeleton in tattered clothing on the ground leaning against a tree")
-        print("Vines wrap around in a chilling embrace, claiming it. The tree may own the body, but you claim the contents of his satchel")
-        print("GAIN 3 10hp health potions")
-        hero.potion += 3
-        st.session_state.forest_encounter1 = True 
-        hero.equipment_check()
-    
-    elif encounter == 2 and not st.session_state.forest_encounter2:
-        print("\nYou stumble upon a crumbling altar covered in vines and old runes. As you touch it, a warm light courses through your body.")
-        hero.max_hp += 5
-        hero.hp = hero.max_hp
-        print(f"MAX HP increased by 5 --- {hero.name} hp now {hero.hp}")
-        st.session_state.forest_encounter2 = True 
+    if encounter == 1:
+        if not st.session_state.forest_encounter1:
+            st.write("You find a skeleton in tattered clothing on the ground leaning against a tree")
+            st.write("Vines wrap around in a chilling embrace, claiming it.")
+            st.write("The tree may own the body, but you claim the contents of his satchel")
+            st.write("GAIN 3 10hp health potions")
+            hero.potion += 3
+            st.session_state.forest_encounter1 = True 
+            hero.equipment_check()
+        button("Continue", next_step="forest_maze_nav_options", extra_state= {"maze_nav_selected": False})
+
+    elif encounter == 2:
+        if not st.session_state.forest_encounter2:
+            st.write("You stumble upon a crumbling altar covered in vines and old runes.")
+            st.write("As you touch it, a warm light courses through your body.")
+            hero.max_hp += 5
+            hero.hp = hero.max_hp
+            st.write(f"MAX HP increased by 5 --- {hero.name} hp now {hero.hp}")
+            st.session_state.forest_encounter2 = True 
+        button("Continue", next_step="forest_maze_nav_options", extra_state= {"maze_nav_selected": False})
 
     elif encounter in (3,4):
-        print("\nA guttural voice breaks the silence. Two orcs in leather armor step out from the trees, blades drawn, eyes full of malice.")
+        st.write("A guttural voice breaks the silence. Two orcs in leather armor step out from the trees, blades drawn, eyes full of malice.")
         st.session_state.monster = st.session_state.orc
+        extra = {
+            "maze_nav_selected": False,
+            "next_step": "forest_maze_nav_options"
+        }
 
-        button("Begin Combat", next_step="combat_hero", extra_state={"next_step": "forest_maze_nav_options"})
+        button("Begin Combat", next_step="combat_hero", extra_state= extra)
 
-    
+    elif encounter in (5,6):
+        st.write("You step into a web-strewn clearing — the air thick with silk and the promise of fangs.")
+        st.write("Two spiders the size of dogs rush towards you")
+        st.session_state.monster = st.session_state.spider
 
+        extra = {
+            "maze_nav_selected": False,
+            "next_step": "forest_maze_nav_options"
+        }
 
+        button("Begin Combat", next_step="combat_hero", extra_state= extra)
 
-    button("Continue", next_step="forest_maze_nav_options", extra_state= {"maze_nav_selected": False})
+    elif encounter in (7,8):
+        st.write("A whistling arrow lands at your feet. Have you found the rangers?")
+        st.write("No such luck. Bandits melt out from the foliage, grinning.")
+        st.session_state.monster = st.session_state.forestbandit
+
+        extra = {
+            "maze_nav_selected": False,
+            "next_step": "forest_maze_nav_options"
+        }
+
+        button("Begin Combat", next_step="combat_hero", extra_state= extra)
+
+    elif encounter in (9,10):
+        if not st.session_state.forest_encounter6:
+            st.write("The path crumbles beneath your feet! You manage to cling to a root, but your gear shifts and a pouch falls into a ravine")
+            st.write("Lose 1 10hp health potion")
+            hero.potion -= 1
+            st.session_state.forest_encounter6 = True
+            hero.equipment_check()
+        button("Continue", next_step="forest_maze_nav_options", extra_state= {"maze_nav_selected": False})
+
+    elif encounter in (11,12,13):
+        st.write("A low growl rises from the underbrush. Yellow eyes gleam between the ferns — not one, but several. They're circling")
+        st.session_state.monster = st.session_state.forestwolf
+
+        extra = {
+            "maze_nav_selected": False,
+            "next_step": "forest_maze_nav_options"
+        }
+
+        button("Begin Combat", next_step="combat_hero", extra_state= extra)
+
+    elif encounter in (14,15,16):
+        encounter8_list = [
+            "You stumble into a patch of flowers—the dizzying scent is disorienting… was the path here before?",
+            "The path ahead of you comes to an abrupt end - nature has reclaimed it. No choice but to turn around",
+            "Excitement builds as you see footprints on the trail ahead. Wait, these match your shoes. You've been this way already",
+            "You push through thick underbrush only to find yourself back at a familiar tree. You've walked in a circle.",
+            "You follow a narrowing trail that twists through dense ferns — only to emerge at a stream you've already crossed.",
+            "The canopy thickens, blocking out the light. When it clears, you’re facing the sun again… but weren’t you walking west?",
+            "A chorus of crows erupts overhead. You realize with a sinking feeling — you passed this dead log an hour ago.",
+            "The ground slopes down into a hollow. It’s eerily quiet… too quiet. This path leads nowhere.",
+            "You spot a pile of stones arranged like a marker — your marker. Somehow, you’ve looped back to your own trail.",
+            "The forest thickens until the path vanishes entirely. Twigs snap behind you. You turn quickly — nothing. Best to retreat."
+        ]
+
+        st.write(encounter8_list[st.session_state.forest_encounter89])
+        st.session_state.right_path -= 0.5
+
+        button("Continue", next_step="forest_maze_nav_options", extra_state= {"maze_nav_selected": False})
+
+    else:
+        encounter9_list = [
+            "You hear movement nearby. Just a rabbit... or was it?",
+            "A figure darts through the trees then melts into the shadows",
+            "You hear a roar to the east. Too close for comfort", 
+            "The air smells of rotten flesh and you have no desire to find the source",
+            "Maybe it's time for a break. You feel eyes watching you... maybe find another spot",
+            "You catch the faint sound of breathing — not yours — then silence.",
+            "Branches above sway with no wind. Something's up there… or was.",
+            "A low growl rises behind you, but when you spin around, there's nothing.",
+            "The shadows between the trees seem to shift as you stare. You keep walking.",
+            "Your foot lands in something warm. You don’t stop to check what it was."
+        ]
+        
+        st.write(encounter9_list[st.session_state.forest_encounter89])
+        st.write("You stay alert and press on")
+
+        button("Continue", next_step="forest_maze_nav_options", extra_state= {"maze_nav_selected": False})
 
 
 elif step == "maze_boss_intro":
     st.write("Squinting in the gloom beyond the thick brush, you can't make anything out")
     st.write("Suddenly a large deer bursts out and runs past you. You stumble backwards and find yourself suspended between two trees") 
-    pause("press Enter to pull yourself free")
+    
+    button("pull yourself free", next_step= "maze_boss_intro2")
 
 elif step == "maze_boss_intro2":
     scene_image()
-    st.write("You lurch forward and find you can't move. A web, nearly invisible, clings to your limbs like molasses.")
+    st.write("You lurch forward and find you can't move. Webbing clings to your limbs like molasses.")
     st.write("Above you, something clicks its mandibles in the dark. It sounds massive. You’ve got seconds.")
+    print(" 🕸️ 🕸️" * 15)
+
+    st.session_state.struggle_roll = random.randint(1,10)
+
+elif step == "web_trap":
+    scene_image()
+    struggle_options = {
+        "Try to pull your arms free": (8,6),
+        "Try to kick your legs free": (9,7),
+        "Thrash wildly with your entire body": (10,10)
+    }
+
+    radio_form("What do you do?", list(struggle_options.keys()), key= "struggle_choice", next_step= "web_trap2")
+
+
+elif step == "web_trap2":
+    scene_image()
+    struggle_options = {
+        "Try to pull your arms free": (8,6),
+        "Try to kick your legs free": (9,7),
+        "Thrash wildly with your entire body": (10,10)
+    }
+
+    early_odds, late_odds = struggle_options[st.session_state.struggle_choice]
+    escape = early_odds if st.session_state.web_turn < 2 else late_odds
+    if st.session_state.struggle_roll >= escape:
+        button("You're Free!!", next_step= "web_free", extra_state={"web_free": True})
+    else:
+        st.write("You struggle but the webs hold tight...")
+        button("Continue", next_step= "web_trap3", extra_state= {"web_turn": st.session_state.web_turn + 1})
+
+
+elif step == "web_trap3":
+    scene_image()
+    st.session_state.struggle_roll = random.randint(1,10)
+
+    web_turn_list = [
+        "",
+        "You hear legs scraping bark nearby...",
+        "The web trembles slightly — it's close...",
+        "A shadow looms above you..."
+    ]
+
+    if st.session_state.web_turn < 4:
+        button("Try again", next_step= "web_trap")
+    else:
+        button("Continue", next_step= "web_free")
+
+elif step == "web_free":
+    if "fought_spider" not in st.session_state:
+        st.session_state.fought_spider = False
+
+    if "poisoned" not in st.session_state:
+        st.session_state.poisoned = False
+
+    
+    web_turn = st.session_state.web_turn
+    web_free = st.session_state.web_free
+
+    if web_free and web_turn < 2:
+        print("\nThe silky strands give way and you tumble to the ground. Wasting no time, you take off running before the spider arrives")
+
+    elif web_free:
+        print("\nYou tear yourself free just as the spider draws near")
+        print("In one fluid motion you draw your sword and slash at dripping fangs.")
+        button("ATTACK!", next_step= "spider_surprise_attack", extra_state={"giantspider.hp": st.session_state.giantspider.hp - 5})
+
+    else:
+        print("\nUnable to free yourself in time, the spider lunges from the rear as you struggle helplessly!")
+        print(f"{hero.name} loses 5 hp")
+        print("\nAs fangs sink into flesh, the weight of the spider gives you the last push needed to free yourself from the trap")
+        print("Back throbbing from the bite, you draw your sword and prepare to defend yourself")
+
+        extra = {
+            "fought_spider": True,
+            "poisoned": True,
+            "hero.hp": st.session_state.hero.hp - 5
+        }
+
+        button("Begin Combat", next_step= "combat_hero", extra_state= extra)
+
+elif step == "spider_surprise_attack":
+        print("SURPRISE ATTACK! The giant spider loses 5 hp")
+        print("Enraged, the spider shrieks and knocks you aside with powerful legs. You roll into attack position preparing for battle")
+        st.session_state.fought_spider = True
+        st.session_state.monster = giantspider
+        button("Begin Combat", next_step= "combat_hero", extra_state={"next_step":"spider_aftermath"})
+    
+elif step == "spider_aftermath":
+    "spider aftermath"
 
 elif step == "maze_ranger_trap":
     ""
