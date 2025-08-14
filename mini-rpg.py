@@ -80,12 +80,15 @@ def scene_image():
         "maze_encounter_altar": "images/forest-altar.webp",
         "maze_encounter_slipped": "images/forest-slipped.webp",
         "maze_boss_intro2": "images/stuck-in-web.webp",
+        "web_trap": "images/stuck-in-web.webp",
+        "web_trap2": "images/stuck-in-web.webp",
+        "web_trap3": "images/stuck-in-web.webp",
         "maze_ranger_trap": "images/ranger-trap.webp",
-        "": "images/ranger-camp-arrival.webp",
-        "": "images/ranger-leader-laugh.webp",
-        "": "images/ranger-leader-smile.webp",
-        "": "images/ranger-leader-disappointed.webp",
-        "": "images/ranger-farerwell.webp"
+        "ranger_camp2": "images/ranger-camp-arrival.webp",
+        "ranger_camp6": "images/ranger-leader-smile.webp",
+        "ranger_camp4": "images/ranger-leader-disappointed.webp",
+        "ranger_rewards": "images/ranger-farewell.webp",
+        "ranger_rewards2": "images/ranger-farewell.webp"
 
     }
 
@@ -207,14 +210,29 @@ def scene_music():
         "maze_random_encounter": "music/forest-maze.mp3",
         "maze_boss_intro": "music/caught-in-web.mp3",
         "maze_boss_intro2": "music/caught-in-web.mp3",
+        "web_trap": "music/caught-in-web.mp3",
+        "web_trap2": "music/caught-in-web.mp3",
+        "web_trap3": "music/caught-in-web.mp3",
+        "web_free": "music/caught-in-web.mp3",
+        "spider_surprise_attack": "music/caught-in-web.mp3",
+        "web_trap": "music/caught-in-web.mp3",
+        "spider_aftermath": "music/forest-maze.mp3",
         "maze_ranger_trap": "music/forest-maze.mp3",
-        "ranger_village": "music/ranger-village.mp3",
+        "maze_ranger_trap_release": "music/sleeping.mp3",
+        "ranger_camp": "music/ranger-village.mp3",
+        "ranger_camp2": "music/ranger-village.mp3",
+        "ranger_camp3": "music/ranger-village.mp3",
+        "ranger_camp4": "music/ranger-village.mp3",
+        "ranger_camp5": "music/ranger-village.mp3",
+        "ranger_camp6": "music/ranger-village.mp3",
+        "ranger_camp7": "music/ranger-village.mp3",
+        "ranger_sleep": "music/sleeping.mp3",
+        "ranger_rewards": "music/ranger-next-day.mp3",
+        "ranger_rewards2": "music/ranger-next-day.mp3",
+        "return_home": "music/village-background.mp3",
         "final battle prep": "music/final-battle-prep.mp3",
         "game_over": "music/game-over.mp3", 
 
-
-        "puzzle_trigger": "music/forest-maze.mp3",
-        "puzzle_trigger": "music/ranger-next-day.mp3",
 
     }
 
@@ -323,7 +341,7 @@ def custom_music_player(file_path: str, autoplay=True, loop=True):
 quests = {
     "The Hill Dwarves": "dwarves_intro",
     "Tomb of the Dragon Slayer": "slayer_intro",
-    "Forest Rangers": "rangers_intro"
+    "Forest Rangers": "ranger_intro"
 }
 
 
@@ -992,8 +1010,7 @@ elif step == "elder_sendoff":
     if "q2" in st.session_state and st.session_state.q2 == "No":
         st.write(f"'Oh {hero.name}, and that's precisely why you are the right person'")
     st.divider()
-
-    radio_form("Where will you go for aid?", list(quests.keys()), key = "quest", next_step="intro_rewards", mapping = quests)
+    radio_form("Where will you go for aid?", list(quests.keys()), key = "quest", next_step="intro_rewards")
     #     click_button()
     #     st.session_state.step = "intro_rewards"
     #     st.session_state.clicked = False
@@ -1008,7 +1025,7 @@ elif step == "intro_rewards":
     st.divider()
     hero.equipment_check()
     
-    button("Begin Quest", next_step= st.session_state.quest)
+    button("Begin Quest", next_step= quests[st.session_state.quest])
     # if st.session_state.clicked == False and button("Begin Quest", next_step= st.session_state.quest):
     #     click_button()
     #     st.session_state.step = st.session_state.quest
@@ -1771,7 +1788,6 @@ elif step == "ranger_intro":
     button("Continue", next_step="forest_arrival")
 
 elif step == "forest_arrival":
-    scene_image()
     st.write("You arrive at the forest edge")
     st.write("The trees rise like silent sentinels, thick and ancient, their bark gnarled with age.")
     st.write("Shafts of pale sunlight pierce the canopy in narrow beams, casting shifting patterns on the mossy ground.")
@@ -1782,6 +1798,8 @@ elif step == "forest_arrival":
 
 
     button("Enter the forest path", next_step= "forest_maze_nav_options")
+    scene_image()
+
 
 # === FOREST MAZE ===
 
@@ -1803,11 +1821,11 @@ elif step == "forest_maze_nav_options":
     ]
 
     st.write("🌲" * 25)
-    st.write("random nav opt", st.session_state.random_nav_option)
-    st.write("right choice", st.session_state.right_choice)
-    st.write("maze nav selected", st.session_state.maze_nav_selected)
-    st.write("lost turn" , st.session_state.lost_turn)
-    st.write("right path", st.session_state.right_path)
+    # st.write("random nav opt", st.session_state.random_nav_option)
+    # st.write("right choice", st.session_state.right_choice)
+    # st.write("maze nav selected", st.session_state.maze_nav_selected)
+    # st.write("lost turn" , st.session_state.lost_turn)
+    # st.write("right path", st.session_state.right_path)
 
     if st.session_state.lost_turn == 8 or st.session_state.right_path >= 4:
         button("A twig snaps to your right...", next_step= "maze_boss_intro")
@@ -1832,10 +1850,10 @@ elif step == "forest_maze_nav_options":
 
 
 elif step == "maze_random_encounter":
-    st.write("maze random encounter")
-    st.write("maze nav selected", st.session_state.maze_nav_selected)
-    st.write("lost turn" , st.session_state.lost_turn)
-    st.write("right path", st.session_state.right_path)
+    # st.write("maze random encounter")
+    # st.write("maze nav selected", st.session_state.maze_nav_selected)
+    # st.write("lost turn" , st.session_state.lost_turn)
+    # st.write("right path", st.session_state.right_path)
 
     st.session_state.right_choice = random.randint(0,1)
     st.session_state.random_nav_option = random.randint(0,3)
@@ -1959,20 +1977,25 @@ elif step == "maze_random_encounter":
 
 elif step == "maze_boss_intro":
     st.write("Squinting in the gloom beyond the thick brush, you can't make anything out")
-    st.write("Suddenly a large deer bursts out and runs past you. You stumble backwards and find yourself suspended between two trees") 
+    st.write("Suddenly a large deer bursts out and runs past you.")
+    st.write("You stumble backwards and find yourself suspended between two trees") 
     
     button("pull yourself free", next_step= "maze_boss_intro2")
 
 elif step == "maze_boss_intro2":
-    scene_image()
     st.write("You lurch forward and find you can't move. Webbing clings to your limbs like molasses.")
     st.write("Above you, something clicks its mandibles in the dark. It sounds massive. You’ve got seconds.")
-    print(" 🕸️ 🕸️" * 15)
+    st.write(" 🕸️ 🕸️" * 10)
+    st.session_state.web_turn = 0
+    st.session_state.web_free = False
+    st.session_state.monster = giantspider
+
+    button("Continue", next_step= "web_trap")
+    scene_image()
 
     st.session_state.struggle_roll = random.randint(1,10)
 
 elif step == "web_trap":
-    scene_image()
     struggle_options = {
         "Try to pull your arms free": (8,6),
         "Try to kick your legs free": (9,7),
@@ -1980,10 +2003,9 @@ elif step == "web_trap":
     }
 
     radio_form("What do you do?", list(struggle_options.keys()), key= "struggle_choice", next_step= "web_trap2")
-
+    scene_image()
 
 elif step == "web_trap2":
-    scene_image()
     struggle_options = {
         "Try to pull your arms free": (8,6),
         "Try to kick your legs free": (9,7),
@@ -1998,9 +2020,9 @@ elif step == "web_trap2":
         st.write("You struggle but the webs hold tight...")
         button("Continue", next_step= "web_trap3", extra_state= {"web_turn": st.session_state.web_turn + 1})
 
+    scene_image()
 
 elif step == "web_trap3":
-    scene_image()
     st.session_state.struggle_roll = random.randint(1,10)
 
     web_turn_list = [
@@ -2014,6 +2036,9 @@ elif step == "web_trap3":
         button("Try again", next_step= "web_trap")
     else:
         button("Continue", next_step= "web_free")
+    
+    scene_image()
+
 
 elif step == "web_free":
     if "fought_spider" not in st.session_state:
@@ -2027,18 +2052,19 @@ elif step == "web_free":
     web_free = st.session_state.web_free
 
     if web_free and web_turn < 2:
-        print("\nThe silky strands give way and you tumble to the ground. Wasting no time, you take off running before the spider arrives")
+        st.write("The silky strands give way and you tumble to the ground. Wasting no time, you take off running before the spider arrives")
+        button("Continue", next_step= "maze_ranger_trap")
 
     elif web_free:
-        print("\nYou tear yourself free just as the spider draws near")
-        print("In one fluid motion you draw your sword and slash at dripping fangs.")
+        st.write("You tear yourself free just as the spider draws near")
+        st.write("In one fluid motion you draw your sword and slash at dripping fangs.")
         button("ATTACK!", next_step= "spider_surprise_attack", extra_state={"giantspider.hp": st.session_state.giantspider.hp - 5})
 
     else:
-        print("\nUnable to free yourself in time, the spider lunges from the rear as you struggle helplessly!")
-        print(f"{hero.name} loses 5 hp")
-        print("\nAs fangs sink into flesh, the weight of the spider gives you the last push needed to free yourself from the trap")
-        print("Back throbbing from the bite, you draw your sword and prepare to defend yourself")
+        st.write("Unable to free yourself in time, the spider lunges from the rear as you struggle helplessly!")
+        st.write(f"{hero.name} loses 5 hp")
+        st.write("As fangs sink into flesh, the weight of the spider gives you the last push needed to free yourself from the trap")
+        st.write("Back throbbing from the bite, you draw your sword and prepare to defend yourself")
 
         extra = {
             "fought_spider": True,
@@ -2049,17 +2075,176 @@ elif step == "web_free":
         button("Begin Combat", next_step= "combat_hero", extra_state= extra)
 
 elif step == "spider_surprise_attack":
-        print("SURPRISE ATTACK! The giant spider loses 5 hp")
-        print("Enraged, the spider shrieks and knocks you aside with powerful legs. You roll into attack position preparing for battle")
+        st.write("SURPRISE ATTACK! The giant spider loses 5 hp")
+        st.write("Enraged, the spider shrieks and knocks you aside with powerful legs. You roll into attack position preparing for battle")
         st.session_state.fought_spider = True
-        st.session_state.monster = giantspider
         button("Begin Combat", next_step= "combat_hero", extra_state={"next_step":"spider_aftermath"})
     
 elif step == "spider_aftermath":
-    "spider aftermath"
+    st.write("Having no desire to see if the creature has friends, you bolt away from the carcass down the path")
+    if st.session_state.poisoned:
+        st.write("Back constricting, you feel the venom seizing up your muscles. You need help, and fast")
+
+    button("Run away", next_step= "maze_ranger_trap")
 
 elif step == "maze_ranger_trap":
-    ""
+    st.write("In your haste, your foot snags something. A whisper of rope, a snap — and the world flips")
+    st.write("You’re yanked upside down, blood rushing to your head as the forest spins")
+    st.write("Then silence. No footsteps, no breathing — until cloaked figures melt from the trees like ghosts")
+    st.write("Faces hidden beneath hoods, bows aimed, unmoving. One steps forward and slices the rope")
+
+    button("Continue", next_step= "maze_ranger_trap_release")
+    scene_image()
+
+
+elif step == "maze_ranger_trap_release":
+    black_out = ["", "", "", "", "", "The world...", "crashes down...", "to", "black"]
+
+    if "knocked_out" not in st.session_state:
+        st.session_state.knocked_out = False
+
+    if not st.session_state.knocked_out:
+        for i in black_out:
+            st.write(i)
+            time.sleep(1)
+
+
+        st.write("😴 😴 😴")
+        time.sleep(1)
+        st.session_state.knocked_out = True
+    time.sleep(2)
+    button("Wake Up", next_step= "ranger_camp")
+
+
+elif step == "ranger_camp":
+    st.write("When you wake, your hands are unbound but you're surrounded by lean, silent figures with watchful eyes and forest-worn cloaks")
+    if st.session_state.poisoned:
+        st.write("You notice the pain from the spider venom is gone and there are fresh dressings under your shirt")
+    st.write("Wooden platforms span the trees above, connected by rope bridges")
+    st.write("Cooking fires crackle low, their smoke rising like spirits")
+    st.write("This is not a simple ranger camp — it’s a village among the branches")
+    st.write("'Hello little cub'")
+    button("Look Up", next_step= "ranger_camp2")
+
+elif step == "ranger_camp2":
+    scene_image()
+    st.write("You see the leader drop from a platform above, landing lightly beside you with a cat’s grace")
+    st.write("Her cloak rustles like leaves in a breeze. Her sharp eyes study you with amusement as though she’s already decided your story.")
+    st.write("'Most who find us are never seen again. But you... you’ve caused quite a stir.' She circles you slowly")
+    st.write("'So tell me, brave wanderer — are you here to beg, bargain, or blunder?'")
+
+    radio_form("You respond - ", [
+    "   1- I came to beg help of the rangers to face a dragon threatening my village",
+    "   2- Simple - help kill a dragon, share the hoard. You’ll have silver-tipped arrows for centuries",
+    "   3- Well, there's a dragon to slay, but blunder has ALWAYS been my favorite pastime"
+    ], key= "ranger_q1", next_step="ranger_camp3")
+
+elif step == "ranger_camp3":
+    if "1" in st.session_state.ranger_q1:
+        st.write("'Begging? Poor look on someone who walked through my forest and lived'")
+        st.image("images/ranger-leader-disappointed.webp", caption=None, use_container_width=True)
+
+    elif "2" in st.session_state.ranger_q1: 
+        st.write("'Treasure buys nothing in the forest, but shiny things are nice...'")
+    else:
+        st.write("'Then you're in luck, cub - our traps love repeat offenders'")
+
+    button("Continue", next_step= "ranger_camp4")
+
+elif step == "ranger_camp4": 
+    scene_image()
+    st.write("'A dragon, hmm? Well, we don’t care much for torching trees.' She cocks her head, considering")
+    st.write("She circles you, arms behind her back, expression unreadable")
+    st.write("'The world is full of would-be heroes. Some are fools, some are corpses. What makes you different?'")
+    radio_form("You respond - ", [
+        "   1- I’ve got a sharp blade, steady hands, and a village that believes in me",
+        "   2- Probably nothing. But I’ve made it this far without dying — and that’s more than most",
+        "   3- I’m smart enough to know your scouts could’ve dropped me three times already, and charming enough to still be standing",
+        "   4- I don’t seek glory. I only ask to die for something larger than myself — if I must die at all"
+    ], key= "ranger_q2", next_step="ranger_camp5")
+
+elif step == "ranger_camp5":
+    if "1" in st.session_state.ranger_q2:
+        st.write("'Shall we wager how well belief guards against dragon fire?'")
+    elif "2" in st.session_state.ranger_q2: 
+        st.write("'Ha, a dragon slayer not weighed down by ego, perhaps there's hope for you, cub'")
+        st.image("images/ranger-leader-smile.webp", caption=None, use_container_width=True)
+    elif "3" in st.session_state.ranger_q2:
+        st.write("She bursts out laughing. 'Thank you for the laugh, cub. Charming indeed covered in grime, guts, and spiderweb'") 
+        st.image("images/ranger-leader-laugh.webp", caption=None, use_container_width=True)
+    else:
+        st.write("'An idealist, perhaps you've read too many stories'")
+
+    button("Continue", next_step= "ranger_camp6")
+
+elif step == "ranger_camp6":
+    scene_image()
+    st.write("Eyeing you carefully, finally she shrugs and nods her head")
+    st.write("'You fought your way here, cub. That says enough'")
+    st.write("'You now have ranged support, friend. Our bows will find the beast when you call'")
+    hero.ranger_volley = True
+
+    button("Continue", next_step= "ranger_camp7")
+
+elif step == "ranger_camp7":
+    if st.session_state.fought_spider:
+        st.write("Later on, a young ranger seeks you out and makes a big show of pulling a small green vial from his sleeve")
+        st.write("He pops it open, wrinkling his nose as he sniffs the air")
+        st.write("'Smell that? Venom. Straight from the eight-legged nasty you tangled with'")
+        st.write("'We refined it for you. Coat your blade - it'll sting more than dragonhide likes'")
+        st.write("Taking a bow, he scampers away. Strange lad")
+        hero.venom = True
+
+    st.write("'Now rest up, be our guest tonight and tomorrow we can escort you home'")
+
+    button("Retire to your bed", next_step= "ranger_sleep")
+
+elif step == "ranger_sleep":
+    if "slept" not in st.session_state:
+        st.session_state.slept = False
+
+    if not st.session_state.slept:
+        sleep_animation()
+        st.session_state.slept = True
+    button("Wake up", next_step = "ranger_rewards")
+
+elif step == "ranger_rewards":
+    scene_image()
+    st.write("The next morning you're called to the edge of the settlement where the ranger leader waits with a small regiment of archers")
+    st.write("'For you, cub, an escort of some of the finest bowmen the woods have to offer'")
+    st.write("'May their arrows fly true and drop that scaly beast where your sword can greet it'")
+    st.write("She tosses you a pouch. 'I wish you luck - I've a feeling you'll need it'")
+    st.write("GAIN 3 10hp health potions")
+    hero.potion += 3
+    hero.equipment_check()
+
+    if "2" or "3" in st.session_state.ranger_q2:
+        button("Continue", next_step= "ranger_rewards2")
+    else:
+        button("Return home", next_step= "return_home")
+
+elif step == "ranger_rewards2":
+    scene_image()
+    st.write("'Been a pleasure, cub, you're more fun than I expected")
+    
+    if not st.session_state.forest_got_armor or not st.session_state.forest_got_sword:
+        st.write("Take this as well - a gift from the forest'")
+
+        if not st.session_state.forest_got_armor:
+            st.write("GAIN LEATHER ARMOR")
+            hero.armor = "Leather Armor"
+            hero.defense += 2
+            st.session_state.forest_got_armor = True
+        
+        if not st.session_state.forest_got_sword:
+            st.write("GAIN LONGSWORD)")
+            hero.sword = "Longsword"
+            hero.atk += 2
+            st.session_state.forest_got_sword = True
+
+        hero.equipment_check()
+    
+    button("Return home", next_step= "return_home")
 
 
 elif step == "return_home":
