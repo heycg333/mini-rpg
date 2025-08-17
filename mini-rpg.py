@@ -88,7 +88,19 @@ def scene_image():
         "ranger_camp6": "images/ranger-leader-smile.webp",
         "ranger_camp4": "images/ranger-leader-disappointed.webp",
         "ranger_rewards": "images/ranger-farewell.webp",
-        "ranger_rewards2": "images/ranger-farewell.webp"
+        "ranger_rewards2": "images/ranger-farewell.webp",
+        "return_home2": "images/village-woman.webp",
+        "final_prep": "images/elder-farm.webp",
+        "dragon_intro": "images/dragon-intro.webp",
+        "final_battle_air_hero": "images/dragon-air-combat.webp",
+        "final_battle_hero_action": "images/dragon-air-combat.webp",
+        "final_battle_monster_air": "images/dragon-air-combat.webp",
+        "final_battle_ground_hero": "",
+        "final_battle_ground_hero_action": "images/dragon-air-combat.webp",
+        "final_battle_monster_ground": "images/dragon-air-combat.webp",
+        "dragon_defeated": "",
+        "dragon_defeated2": ""
+
 
     }
 
@@ -230,7 +242,22 @@ def scene_music():
         "ranger_rewards": "music/ranger-next-day.mp3",
         "ranger_rewards2": "music/ranger-next-day.mp3",
         "return_home": "music/village-background.mp3",
-        "final battle prep": "music/final-battle-prep.mp3",
+        "return_home2": "music/village-background.mp3",
+        "travel_animation": "music/final-battle-prep.mp3",
+        "final_prep": "music/final-battle-prep.mp3",
+        "final_prep2": "music/final-battle-prep.mp3",
+        "dragon_intro2": "music/final-battle-prep.mp3",
+        "final_battle_air_hero": "music/final-battle-prep.mp3",
+        "final_battle_hero_action": "music/final-battle-prep.mp3",
+        "final_battle_monster_air": "music/final-battle-prep.mp3",
+        "dragon_comes_down": "music/final-battle-prep.mp3",
+        "dragon_comes_down2": "music/final-battle-prep.mp3",
+        "final_battle_ground_hero": "music/final-battle-prep.mp3",
+        "final_battle_ground_hero_action": "music/final-battle-prep.mp3",
+        "final_battle_monster_ground": "music/final-battle-prep.mp3",
+        "dragon_defeated": "music/final-battle-prep.mp3",
+        "dragon_defeated2": "music/final-battle-prep.mp3",
+        "dragon_defeated3": "music/final-battle-prep.mp3",
         "game_over": "music/game-over.mp3", 
 
 
@@ -353,6 +380,42 @@ equipment = {
 }
 
 battle_options = ["⚔️  Attack", "🛡️  Block", "💗 Heal Potion"]
+final_battle_options_ranger = ["🏹  Attack", "🛡️  Block", "💗 Heal Potion", "⭐ Ranger Volley"]
+final_battle_options_slayer = ["🏹  Attack", "🛡️  Block", "💗 Heal Potion", "⭐ Slayer Sword Blast"]
+final_battle_options_dwarves = ["🏹  Attack", "🛡️  Block", "💗 Heal Potion", "⭐ Call For Dwarven Traps"]
+final_battle_options_air = ["🏹  Attack", "🛡️  Block", "💗 Heal Potion"]
+final_battle_options_ground_ranger = ["⚔️  Attack", "🛡️  Block", "💗 Heal Potion", "⭐ Ranger Volley"]
+final_battle_options_ground_slayer = ["⚔️  Attack", "🛡️  Block", "💗 Heal Potion", "⭐ Slayer Sword Blast"]
+
+quest_text = {
+    "dwarves": [
+        "'And a very warm welcome to the Hill Dwarves, your aid shall not be forgotten'",
+        "Defer to the dwarves for expertise",
+        "You turn and find the dwarves are already busy barking orders, apparently planning to do both",
+        "Dwarves hammer iron stakes into carts and weld makeshift barricades. Others prepare elaborate mechanical traps", 
+        "The dwarves clang weapons against shields, providing comfort to the villagers they defend",
+        ""
+    ],
+    "slayer": [
+        "'That sword certainly looks the part, let us hope it lives up to its legend'",
+        "Let the Elder decide",
+        "'Hmmm, the pit trap seems best'",
+        "",
+        "When you draw the slayer's sword, it's glow cuts through dusk like fire through fog. It pulses eagerly",
+        "The sword flares up in a blue blaze. In the glow you can almost hear satisfied whispers"
+    ],
+    "rangers": [
+        "'And a very warm welcome to the Forest Rangers, your aid shall not be forgotten'", 
+        "Defer to the rangers for expertise",
+        "The rangers agree the pit trap is best",
+        "The rangers sharpen arrows while they supervise the villagers",
+        "The rangers slink into their hiding spots and blend into the fields like shadows",
+        ""
+    ],
+    "none": [
+        "", "Let the Elder decide", "'Hmmm, the pit trap seems best'", "", "", ""
+    ]
+}
 
 
 for key in ["q1", "q2", "quest"]:
@@ -394,7 +457,14 @@ class SoundEffectManager:
             "monster_attack": "sfx/monster-attack.mp3",
             "monster_roar": "sfx/monster-roar.mp3",
             "you_chose_poorly": "sfx/you-chose-poorly.mp3",
-            "footsteps": "sfx/footsteps.mp3"
+            "footsteps": "sfx/footsteps.mp3",
+            "hiss": "sfx/hiss.mp3",
+            "dragon_roar": "sfx/dragon-roar.mp3",
+            "dragon_flying": "sfx/dragon-flapping-wings.mp3",
+            "dragon_growl": "sfx/dragon-growl.mp3",
+            "dragon_fire": "sfx/dragon-fire.mp3",
+            "dragon_crash": "sfx/dragon-crash.mp3",
+            "arrow": "sfx/arrow.mp3"
         }
 
     def play(self, effect_name: str):
@@ -498,6 +568,93 @@ class Hero: #hero stats and combat methods
         else:
             st.write(f"{self.name} has {self.hp} hp left")
 
+    def ranged_atk(self, monster): #used in final battle
+        d20 = random.randint(1, 20)
+        if d20 == 20:
+            st.write("**********************")
+            st.write("⚔️  CRITICAL HIT!  ⚔️")
+            st.write("**********************")
+            dmg = monster.hp - 25
+        else:
+            dmg = 1
+            st.write(f"{self.name}'s arrow hits. It will take much more to bring the beast down!")
+            
+        monster.take_dmg(dmg)
+
+    def special_atk_ranged(self, monster, round): #used in final battle air phase, special atk depends on which quest completed
+        d20 = random.randint(1, 20)
+        if hero.ranger_volley:
+            st.write("You signal the rangers!")
+            if round > 5 or d20 == 20:
+                st.write("**********************")
+                st.write("⚔️  CRITICAL HIT!  ⚔️")
+                st.write("**********************")
+                dmg = monster.hp - 25
+            elif d20 > 16:
+                dmg = random.randint(8, 11)
+                st.write("The volley strikes true")
+            else: 
+                st.write("The dragon spins to avoid the worst of the attack")
+                dmg = random.randint(2, 4)
+        elif hero.slayer_sword:
+            st.write("You point the sword skyward as its vibrations explode into a beam of energy!")
+            if round > 5 or d20 == 20:
+                st.write("**********************")
+                st.write("⚔️  CRITICAL HIT!  ⚔️")
+                st.write("**********************")
+                dmg = monster.hp - 25
+            elif d20 > 16:
+                dmg = random.randint(8, 11)
+                st.write("The beam strikes true")
+            else: 
+                st.write("The dragon spins to avoid the worst of the attack")
+                dmg = random.randint(2, 4)
+        elif hero.fire_shield:
+            st.write("You signal the dwarves!")
+            st.write("As the dragon swoops down they launch their claw traps")
+            if round > 5 or d20 == 20:
+                st.write("**********************")
+                st.write("⚔️  CRITICAL HIT!  ⚔️")
+                st.write("**********************")
+                dmg = monster.hp - 25
+            elif d20 > 16:
+                dmg = random.randint(8, 11)
+                st.write("Sevaral traps hit their mark, but the dragon shakes free and takes to the sky again")
+            else: 
+                st.write("The dragon spins to avoid the worst of the attack and mighty wings take it out of reach")
+                dmg = random.randint(2, 4)
+        monster.take_dmg(dmg)           
+
+    def special_atk_melee(self, monster): #final battle - ground phase
+        d20 = random.randint(1, 20)
+        rng = random.randint(1, 5)
+        dmg = 10 + rng
+        if hero.ranger_volley:
+            st.write("You signal the rangers!")
+            if d20 == 20:
+                st.write("**********************")
+                st.write("⚔️  CRITICAL HIT!  ⚔️")
+                st.write("**********************")
+                dmg *= 2
+            elif d20 > 10:
+                st.write("The volley strikes true")
+            else: 
+                st.write("The dragon spins to avoid the worst of the attack")
+                dmg = random.randint(2, 4)
+        elif hero.slayer_sword:
+            st.write("The sword thrums with energy, unleashing in a boom at your enemy!")
+            if d20 == 20:
+                st.write("**********************")
+                st.write("⚔️  CRITICAL HIT!  ⚔️")
+                st.write("**********************")
+                dmg *= 2
+            elif d20 > 10:
+                st.write("The beam strikes true")
+            else: 
+                st.write("The dragon dodges the worst of the attack")
+                dmg = random.randint(2, 4)
+        monster.take_dmg(dmg)
+
 
 class Monsters: #enemy stats and combat actions
     def __init__(self, hero, name, maxhp, hp, atk, atkmin, atkmax, defense, poisoned, special, specdmg, specprep, specdesc):
@@ -581,6 +738,35 @@ class Monsters: #enemy stats and combat actions
         dmg = random.randint(1, 3)
         st.write(f"☠️ {self.name} takes {dmg} poison damage ☠️")
         self.hp -= dmg
+        
+    def dragon_air(self, hero): #final battle 
+        d20 = random.randint(1, 20)
+        dodge = random.randint(1, 10)
+        rng = (random.randint(self.atk_min,self.atk_max))
+
+        if d20 <= 10:
+            st.write("The dragon unleashes a torrent of fire from its gaping maw")
+            if hero.fire_shield:
+                dmg = 0
+                st.write("🛡️ You raise the Emberguard and the flames pass harmlessly around you 🛡️")
+            else:
+                dmg = max(0, self.spec_dmg - hero.defense)
+        else:
+            if d20 in (11, 12, 13, 14, 15):
+                st.write("The dragon swoops low, dragging its tail like a spiked plow")
+            else:
+                st.write("The dragon pins its wings back diving straight at you!")
+            dmg = max(0, self.atk - hero.defense + rng)
+            if hero.block:
+                dmg //= 2
+
+        if dodge >= 7:
+            if hero.fire_shield and d20 <= 10:  #no need to dodge if flame attack hits fire shield
+                pass
+            else:
+                st.write("You roll out of the way")
+        else:
+            hero.take_dmg(dmg)
 
         
 if "hero" not in st.session_state:
@@ -639,6 +825,36 @@ def sleep_animation():
         time.sleep(1)
 
     placeholder.empty()  # Clear the text after it's done (optional)
+
+
+def travel_animation():
+    travel_text = st.empty()
+    progress = st.progress(0)
+
+    travel_text.write("Starting your journey...")
+
+    for i in range(1, 101, 10):
+        time.sleep(0.4)
+        progress.progress(i)
+        travel_text.write(f"Traveling... {i}%")
+
+    travel_text.write("You have arrived!")
+    progress.empty()
+
+def the_end():
+    ascii_text = r"""
+  _______ _            _______          ___ 
+ |__   __| |           |  ____|         | |
+    | |  | |__   ___   | |__   _ __   __| |
+    | |  | '_ \ / _ \  |  __| | '_ \ / _` |
+    | |  | | | |  __/  | |____| | | | (_| |
+    |_|  |_| |_|\___|  |______|_| |_|\__,_|
+                                          
+    """
+
+    for char in ascii_text:
+        st.write(char, end="", flush=True)
+        time.sleep(0.02)  
 
     
 def click_button():
@@ -699,23 +915,23 @@ def combat_button(label, extra_state: Optional[dict] = None):
 
 def dragon_drops():
     frames = [
-        "          🐉   ", 
-        "         🐉    ", 
-        "        🐉     ", 
-        "     🐉🔥      ", 
-        "   🐉🔥🔥       ",
+        "⛅☁️☁️☁️☁️🐉☁️☁️", 
+        "⛅☁️☁️☁️🐉☁️☁️", 
+        "⛅☁️☁️🐉☁️☁️☁️", 
+        "⛅☁️🐉🔥☁️☁️☁️", 
+        "⛅ 🐉🔥🔥☁️☁️☁️",
         " 💥🔥🔥🔥🔥💥     ",
     ]
 
     for i in frames:
         st.write(i)
-        time.sleep(0.3)
+        time.sleep(0.5)
 
 
 
 
 if "step" not in st.session_state:
-    st.session_state.step = "ranger_intro"  #"intro"
+    st.session_state.step = "intro"  #"intro"
 step = st.session_state.step
 
 scene_music()
@@ -736,9 +952,16 @@ clicked = st.session_state.clicked
 #     unsafe_allow_html=True
 # )
 
+if step == "test_page":
+    button("click", next_step= "test_page2")
+
+elif step =="test_page2":
+    dragon_drops()
+
+
 
 # === COMBAT ===
-if step == "combat_hero":
+elif step == "combat_hero":
     monster = st.session_state.monster
     hero = st.session_state.hero
 
@@ -788,6 +1011,7 @@ elif step == "hero_action":
         else:
             button("Continue", next_step="combat_monster", extra_state={"player_action_complete": False})
 
+    combat_image()
 
 #copy of combat
     # if not st.session_state.player_action_complete:    
@@ -847,6 +1071,8 @@ elif step == "combat_monster":
             monster.m_special_prep(hero)
             if monster.name == "Troll":
                 sfx.play("low_monster_roar")
+            elif monster.name == "Giant Spider":
+                sfx.play("hiss")
 
         elif monster.special != "none" and round % 4 == 0: #special attack every 4th round
             monster.m_special_atk(hero)
@@ -867,6 +1093,8 @@ elif step == "combat_monster":
 
     elif st.session_state.monster_action_complete:
         button("Continue", next_step="combat_hero", extra_state={"monster_action_complete": False})
+
+    combat_image()
 
 elif step == "combat_victory":
     scene_image()
@@ -924,6 +1152,236 @@ elif step == "combat_victory":
     
     button("Rest, heal, and continue", st.session_state.next_step)
     
+elif step == "final_battle_air_hero":  # === COMBAT LOOP DRAGON IN AIR ===
+    monster = st.session_state.monster
+    hero = st.session_state.hero
+    sfx = SoundEffectManager()
+
+    st.write(f"Round {st.session_state.combat_round}")
+    st.write(f"{hero.name}: {hero.hp} HP")
+    st.write(f"{monster.name}: {monster.hp} HP")
+
+    if "player_action_complete" not in st.session_state:
+        st.session_state.player_action_complete = False
+    if "monster_action_complete" not in st.session_state:
+        st.session_state.monster_action_complete = False
+
+    st.session_state.got_rewards = False
+
+    if hero.ranger_volley:
+        radio_form("Battle Options - ", final_battle_options_ranger, key = "hero_action", next_step="final_battle_hero_action")
+    elif hero.slayer_sword:
+        radio_form("Battle Options - ", final_battle_options_slayer, key = "hero_action", next_step="final_battle_hero_action")
+    elif hero.fire_shield:
+        radio_form("Battle Options - ", final_battle_options_dwarves, key = "hero_action", next_step="final_battle_hero_action")
+    else:
+        radio_form("Battle Options - ", final_battle_options_air, key = "hero_action", next_step="final_battle_hero_action")
+
+    sfx.play("dragon_flying")
+    scene_image()
+
+elif step == "final_battle_hero_action":
+    monster = st.session_state.monster
+    hero = st.session_state.hero
+    sfx = SoundEffectManager()
+    round = st.session_state.combat_round
+
+    if not st.session_state.player_action_complete:
+        action = st.session_state.hero_action
+        if action == "💗 Heal Potion" and hero.potion == 0:
+            st.write(f"Oh no! {hero.name} is out of potions")
+            button("Choose another action", next_step="final_battle_air_hero", extra_state={"player_action_complete": False})
+
+        elif "⭐" in action and round % 2 == 0:
+            st.write("Not available this round")
+            button("Choose another action", next_step="final_battle_air_hero", extra_state={"player_action_complete": False})
+            
+        else:    
+            st.session_state.player_action_complete = True
+
+            if action == "🏹  Attack":
+                hero.ranged_atk(monster)
+                sfx.play("arrow")
+            elif action == "🛡️  Block":
+                hero.block_atk()                
+            elif action == "💗 Heal Potion":
+                hero.heal_potion()
+                sfx.play("potion")
+            elif "⭐" in action:
+                hero.special_atk_ranged(monster, round)
+
+
+    if st.session_state.player_action_complete:
+
+        if monster.hp <= 25:
+            button("Continue", next_step="dragon_comes_down", extra_state={"player_action_complete": False})
+        else:
+            button("Continue", next_step="final_battle_monster_air", extra_state={"player_action_complete": False})
+    
+    sfx.play("dragon_flying")
+    scene_image()
+
+elif step == "final_battle_monster_air":
+    monster = st.session_state.monster
+    hero = st.session_state.hero
+    round = st.session_state.combat_round
+    sfx = SoundEffectManager()
+
+    if not st.session_state.monster_action_complete:
+        st.session_state.monster_action_complete = True
+        monster.dragon_air(hero)
+        sfx.play("dragon_growl")
+
+        st.session_state.player_action_complete = False
+        st.session_state.combat_round += 1
+    
+    if hero.hp <= 0:
+        gameover(hero)
+
+    elif st.session_state.monster_action_complete:
+        button("Continue", next_step="final_battle_air_hero", extra_state={"monster_action_complete": False})
+
+    scene_image()
+
+elif step == "dragon_comes_down":
+    sfx = SoundEffectManager()
+
+    sfx.play("dragon_crash")
+
+    dragon_drops()
+
+    button("Get Out Of The Way!", next_step= "dragon_comes_down2")
+
+elif step == "dragon_comes_down2":
+    if hero.fire_shield:
+        st.write("The dragon shrieks as the traps take hold and tear at its wing. It can no longer carry its weight in air")
+    else:
+        st.write("The dragon crashes to the ground with a shriek, its wing torn and fire sputtering from its jaws")
+    
+    st.write("The earth quakes with its rage")
+    st.write("Now it's time to end this!")
+
+    button("Charge Forward", next_step= "final_battle_ground_hero")
+
+elif step == "final_battle_ground_hero":  # === COMBAT LOOP DRAGON ON GROUND ===
+
+    monster = st.session_state.monster
+    hero = st.session_state.hero
+
+    st.write(f"Round {st.session_state.combat_round}")
+    st.write(f"{hero.name}: {hero.hp} HP")
+    st.write(f"{monster.name}: {monster.hp} HP")
+
+    if "player_action_complete" not in st.session_state:
+        st.session_state.player_action_complete = False
+    if "monster_action_complete" not in st.session_state:
+        st.session_state.monster_action_complete = False
+
+    st.session_state.got_rewards = False
+
+    if hero.ranger_volley:
+        radio_form("Battle Options - ", final_battle_options_ground_ranger, key = "hero_action", next_step="final_battle_hero_action")
+    elif hero.slayer_sword:
+        radio_form("Battle Options - ", final_battle_options_ground_slayer, key = "hero_action", next_step="final_battle_hero_action")
+    else:
+        radio_form("Battle Options - ", battle_options, key = "hero_action", next_step="final_battle_hero_action")
+
+    scene_image()
+
+elif step == "final_battle_ground_hero_action":
+    monster = st.session_state.monster
+    hero = st.session_state.hero
+    sfx = SoundEffectManager()
+    round = st.session_state.combat_round
+
+    if not st.session_state.player_action_complete:
+        action = st.session_state.hero_action
+        if action == "💗 Heal Potion" and hero.potion == 0:
+            st.write(f"Oh no! {hero.name} is out of potions")
+            button("Choose another action", next_step="final_battle_ground_hero", extra_state={"player_action_complete": False})
+
+        elif "⭐" in action and round % 2 == 0:
+            st.write("Not available this round")
+            button("Choose another action", next_step="final_battle_ground_hero", extra_state={"player_action_complete": False})
+            
+        else:    
+            st.session_state.player_action_complete = True
+
+            if action == "⚔️  Attack":
+                hero.std_atk(monster)
+                sfx.play("sword")
+                if hero.venom and not monster.poisoned:
+                    st.write("The dragon recoils as the venom does its job. The beast is poisoned!")
+                    monster.poisoned = True
+
+            elif action == "🛡️  Block":
+                hero.block_atk()                
+            elif action == "💗 Heal Potion":
+                hero.heal_potion()
+                sfx.play("potion")
+            elif "⭐" in action:
+                hero.special_atk_melee(monster)
+    
+    if st.session_state.player_action_complete:
+
+        if monster.hp <= 0:
+            button("Continue", next_step="dragon_defeated", extra_state={"player_action_complete": False})
+        elif monster.poisoned:
+            monster.take_poison_dmg()
+            if monster.hp <= 0:
+               button("Continue", next_step="dragon_defeated", extra_state={"player_action_complete": False})
+            else:
+                button("Continue", next_step="final_battle_monster_ground", extra_state={"player_action_complete": False})
+
+        else:
+            button("Continue", next_step="final_battle_monster_ground", extra_state={"player_action_complete": False})
+
+    scene_image()
+
+elif step == "final_battle_monster_ground":
+    
+    monster = st.session_state.monster
+    hero = st.session_state.hero
+    round = st.session_state.combat_round
+    sfx = SoundEffectManager()
+
+    if not st.session_state.monster_action_complete:
+        st.session_state.monster_action_complete = True
+        if monster.special != "none" and round > 2 and (round + 1) % 4 == 0: #prep special attack before every 4th round
+            monster.m_special_prep(hero)
+            sfx.play("dragon_roar")
+
+        elif monster.special != "none" and round % 4 == 0: #special attack every 4th round
+            monster.m_special_atk(hero)
+            sfx.play("dragon_fire")
+
+        else:
+            d10 = random.randint(1, 10)
+            if d10 <= 5:
+                st.write("The dragon slashes at you with its claws")
+            elif d10 in (6, 7, 8):
+                st.write("The dragon quickly spins, hammering you with its tail")
+            else:
+                st.write("The dragon snarls and chomps at you, aiming to dismember!")
+            monster.m_std_atk(hero)
+
+            monster.m_std_atk(hero)
+            sfx.play("dragon_growl")
+        st.session_state.player_action_complete = False
+        st.session_state.combat_round += 1
+    
+    if hero.hp <= 0:
+        gameover(hero)
+
+    elif st.session_state.monster_action_complete:
+        button("Continue", next_step="final_battle_ground_hero", extra_state={"monster_action_complete": False})
+
+    scene_image()
+
+
+
+        
+
 
 # === GAME INTRODUCTION ===
 elif step == "intro":
@@ -2032,6 +2490,8 @@ elif step == "web_trap3":
         "A shadow looms above you..."
     ]
 
+    st.write(web_turn_list[st.session_state.web_turn - 1])
+
     if st.session_state.web_turn < 4:
         button("Try again", next_step= "web_trap")
     else:
@@ -2063,13 +2523,14 @@ elif step == "web_free":
     else:
         st.write("Unable to free yourself in time, the spider lunges from the rear as you struggle helplessly!")
         st.write(f"{hero.name} loses 5 hp")
-        st.write("As fangs sink into flesh, the weight of the spider gives you the last push needed to free yourself from the trap")
+        st.write("As fangs sink into flesh, the spider's weight gives you the last push needed to free yourself from the trap")
         st.write("Back throbbing from the bite, you draw your sword and prepare to defend yourself")
 
         extra = {
             "fought_spider": True,
             "poisoned": True,
-            "hero.hp": st.session_state.hero.hp - 5
+            "hero.hp": st.session_state.hero.hp - 5,
+            "next_step":"spider_aftermath"
         }
 
         button("Begin Combat", next_step= "combat_hero", extra_state= extra)
@@ -2248,9 +2709,174 @@ elif step == "ranger_rewards2":
 
 
 elif step == "return_home":
-    st.write("return home")
+    st.write("The wind carries the scent of ash as you return home. The village seems far too quiet and your heart races")
+    st.write("Beginning to fear the worst, a window pops open behind you and an old woman hisses 'off the streets you fool, it's not safe'")
+    
+    button("turn and face her", next_step= "return_home2")
+
+elif step == "return_home2":
+    st.write(f"Her face softens a bit as she recognizes you. 'Oh, apologies {hero.name}, we fear open skies these days'") 
+    st.write("'As meager a snack as I'd be, best not tempt the flying beast. Speaking of, shouldn't you be up at the farm with everyone else?'")
+    st.write("She explains the Elder has brought everyone to the northeast plains to help prepare the old abandoned farm for the dragon")
+    st.write("Wasting no time, you bid her farewell and head northeast")
+
+    button("Travel", next_step= "travel_animation")
+
+    scene_image()
+
+elif step == "travel_animation":
+
+    if "travelled" not in st.session_state:
+        st.session_state.travelled= False
+
+    if not st.session_state.travelled:
+        travel_animation()
+        st.session_state.travelled = True
+    button("Continue", next_step = "final_prep")
+
+
+
+elif step == "final_prep":
+    if hero.fire_shield:
+        quest_completed = "dwarves"
+    elif hero.slayer_sword:
+        quest_completed = "slayer"
+    elif hero.ranger_volley:
+        quest_completed = "rangers"
+    else:
+        quest_completed = "none"
+
+    scene_image()
+
+    st.write("The Elder greets you with open arms when you arrive at the farm")
+    st.write(f"'Welcome back {hero.name}!!!'")
+    st.write(quest_text[quest_completed][0])
+
+    st.write("'All able-bodied villagers have gathered, donating farm animals as bait in preparation for your confrontation'")
+    st.write("'There has been some debate on exactly HOW to prepare. Perhaps you can offer input?'")
+    radio_form("How should you prepare?", [
+        "1- Build a pit trap to injure the dragon",
+        "2- Build barricades to offer protection in the battle",
+        f"3- {quest_text[quest_completed][1]}"
+    ], key= "final_q1", next_step= "final_prep2")
+    
+elif step == "final_prep2":
+    if hero.fire_shield:
+        quest_completed = "dwarves"
+    elif hero.slayer_sword:
+        quest_completed = "slayer"
+    elif hero.ranger_volley:
+        quest_completed = "rangers"
+    else:
+        quest_completed = "none"
+
+    st.write("'Well it seems settled, let's get to work!'")
+    st.write("The plains erupt in a bustle of activity as everyone jumps on their assigned tasks")
+    st.write(quest_text[quest_completed][3])
+
+    if "2" in st.session_state.final_q1:
+        st.write("Carts are converted into barricades, flanking the intended battleground")
+    else:
+        st.write("A shallow pit is dug next to the bait area, lined with sharpened stakes and covered in netting and hay")
+
+    st.write("The field is now a battlefield-in-waiting. A makeshift corral holds terrified livestock in a circle of bait")
+
+    if hero.venom:
+        st.write("You coat your weapon in the green venom, careful not to let it touch your skin")
+
+    st.write(quest_text[quest_completed][4])
+
+    button("Finish Preparations", next_step= "dragon_intro")
+
+    if hero.fire_shield:
+        st.image("images/dragon-dwarves-prep.webp", caption=None, use_container_width=True)
+    elif "2" in st.session_state.final_q1:
+        st.image("images/dragon-barricade.webp", caption=None, use_container_width=True)
+    else:
+        st.image("images/dragon-pit.webp", caption=None, use_container_width=True)
+
+elif step == "dragon_intro":
+    sfx = SoundEffectManager()
+    scene_image()
+
+    sfx.play("dragon_roar")
+    sfx.play("dragon_flying")
+
+    st.write("The sun hangs low when the first scream splits the sky")
+    st.write("The clouds ripple as a shadow breaks through. With a sound like mountains cracking, the dragon dives")
+    st.write("Wings stretched like sails, the creature descends toward the bait")
+
+    button("Continue", next_step= "dragon_intro2")
+
+elif step == "dragon_intro2":
+    sfx = SoundEffectManager()
+    if "dragon_trap_dmg" not in st.session_state:
+        st.session_state.dragon_trap_dmg = False
+
+    if "2" in st.session_state.final_q1:
+        sfx.play("dragon_fire")
+        st.write("Approaching, the dragon ignores the livestock and unleashes a torrent of flame")
+        st.write("As the charred makeshift barricades crumble, you're fully exposed on the open plain")
+        st.write("Launching back skyward, the dragon circles around to continue its assault!")
+    else:
+        sfx.play("dragon_crash")
+        st.write("As the dragon lands the ground gives way as it falls into the pit!")
+        st.write("A roar of surprise echoes as the trap bites into scale")
+        if not st.session_state.dragon_trap_dmg:
+            Monsters.take_dmg(dragon, 5)
+            st.session_state.dragon_trap_dmg = True
+        st.write("Tearing free, it launches skyward in a fury and circles around, preparing to make you pay")
+    st.divider()
+    st.write("Someone throws you a bow and a quiver")
+    st.write("'You need to bring the dragon to ground, you can't fight it in the air!")
+
+    st.session_state.monster = st.session_state.dragon
+    if "combat_round" not in st.session_state:
+        st.session_state.combat_round = 1
+
+    button("Begin battle", next_step="final_battle_air_hero")
+
+elif step == "dragon_defeated":
+
+    if hero.fire_shield:
+        quest_completed = "dwarves"
+    elif hero.slayer_sword:
+        quest_completed = "slayer"
+    elif hero.ranger_volley:
+        quest_completed = "rangers"
+    else:
+        quest_completed = "none"
+
+    scene_image()
+
+    st.write("The dragon's breath comes in ragged bursts, blood tracing patterns down its scales")
+    st.write("Time to finish this. Exhausted, hands shaking, you drive your sword in for the killing blow")
+    st.write(quest_text[quest_completed][5])
+    st.write("Wings sag, one last breath hissing between its fangs. Finally, silence")
+    
+    button("Continue", next_step= "dragon_defeated2")
+
+elif step == "dragon_defeated2":
+
+    st.write("The last traces of black smoke dissipate in the sky")
+    st.write("Villagers emerge one by one, cautiously eyeing the massive carcass")
+    st.write(f"Someone shouts '{hero.name} has done it!' and thunderous cheers follow")
+    st.write("The Elder clasps your arm, eyes shining")
+
+    button("Continue", next_step= "dragon_defeated3")
+
+elif step == "dragon_defeated3":    
+    st.write("The dragon is dead")
+    time.sleep(1.5)
+    st.write("The village is safe")
+    time.sleep(1.5)
+    st.write("Finally, there is peace")
+
+    the_end()
+
+
+
 
 elif step == "game_over":
     scene_image()
 
-    sys.exit()
