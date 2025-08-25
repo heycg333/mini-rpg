@@ -76,9 +76,6 @@ def scene_image():
         "slayer_sword": "images/slayer-burial-chamber.webp",
         "slayer_sword_2": "images/slayer-burial-chamber.webp",
         "forest_arrival": "images/forest-entrance.webp",
-        "maze_encounter_skeleton": "images/forest-skeleton.webp",
-        "maze_encounter_altar": "images/forest-altar.webp",
-        "maze_encounter_slipped": "images/forest-slipped.webp",
         "maze_boss_intro2": "images/stuck-in-web.webp",
         "web_trap": "images/stuck-in-web.webp",
         "web_trap2": "images/stuck-in-web.webp",
@@ -95,11 +92,12 @@ def scene_image():
         "final_battle_air_hero": "images/dragon-air-combat.webp",
         "final_battle_hero_action": "images/dragon-air-combat.webp",
         "final_battle_monster_air": "images/dragon-air-combat.webp",
-        "final_battle_ground_hero": "",
-        "final_battle_ground_hero_action": "images/dragon-air-combat.webp",
-        "final_battle_monster_ground": "images/dragon-air-combat.webp",
-        "dragon_defeated": "",
-        "dragon_defeated2": ""
+        "final_battle_ground_hero": "images/dragon-ground-battle.webp",
+        "final_battle_ground_hero_action": "images/dragon-ground-battle.webp",
+        "final_battle_monster_ground": "images/dragon-ground-battle.webp",
+        "dragon_defeated": "images/dragon-defeated.webp",
+        "dragon_defeated2": "images/dragon-defeated.webp",
+        "dragon_defeated3": "images/gameover-win.webp"
 
 
     }
@@ -246,18 +244,18 @@ def scene_music():
         "travel_animation": "music/final-battle-prep.mp3",
         "final_prep": "music/final-battle-prep.mp3",
         "final_prep2": "music/final-battle-prep.mp3",
-        "dragon_intro2": "music/final-battle-prep.mp3",
-        "final_battle_air_hero": "music/final-battle-prep.mp3",
-        "final_battle_hero_action": "music/final-battle-prep.mp3",
-        "final_battle_monster_air": "music/final-battle-prep.mp3",
-        "dragon_comes_down": "music/final-battle-prep.mp3",
-        "dragon_comes_down2": "music/final-battle-prep.mp3",
-        "final_battle_ground_hero": "music/final-battle-prep.mp3",
-        "final_battle_ground_hero_action": "music/final-battle-prep.mp3",
-        "final_battle_monster_ground": "music/final-battle-prep.mp3",
-        "dragon_defeated": "music/final-battle-prep.mp3",
-        "dragon_defeated2": "music/final-battle-prep.mp3",
-        "dragon_defeated3": "music/final-battle-prep.mp3",
+        "dragon_intro2": "music/dragon-battle-air.mp3",
+        "final_battle_air_hero": "music/dragon-battle-air.mp3",
+        "final_battle_hero_action": "music/dragon-battle-air.mp3",
+        "final_battle_monster_air": "music/dragon-battle-air.mp3",
+        "dragon_comes_down": "music/dragon-battle-air.mp3",
+        "dragon_comes_down2": "music/dragon-battle-air.mp3",
+        "final_battle_ground_hero": "music/dragon-battle-ground.mp3",
+        "final_battle_ground_hero_action": "music/dragon-battle-ground.mp3",
+        "final_battle_monster_ground": "music/dragon-battle-ground.mp3",
+        "dragon_defeated": "music/dragon-defeated.mp3",
+        "dragon_defeated2": "music/dragon-defeated.mp3",
+        "dragon_defeated3": "music/dragon-defeated.mp3",
         "game_over": "music/game-over.mp3", 
 
 
@@ -464,7 +462,10 @@ class SoundEffectManager:
             "dragon_growl": "sfx/dragon-growl.mp3",
             "dragon_fire": "sfx/dragon-fire.mp3",
             "dragon_crash": "sfx/dragon-crash.mp3",
-            "arrow": "sfx/arrow.mp3"
+            "arrow": "sfx/arrow.mp3",
+            "arrow_volley": "sfx/arrow-volley.mp3",
+            "slayer_sword": "sfx/slayer-sword.mp3",
+            "dwarf_trap": "sfx/dwarf-trap.mp3"
         }
 
     def play(self, effect_name: str):
@@ -841,21 +842,6 @@ def travel_animation():
     travel_text.write("You have arrived!")
     progress.empty()
 
-def the_end():
-    ascii_text = r"""
-  _______ _            _______          ___ 
- |__   __| |           |  ____|         | |
-    | |  | |__   ___   | |__   _ __   __| |
-    | |  | '_ \ / _ \  |  __| | '_ \ / _` |
-    | |  | | | |  __/  | |____| | | | (_| |
-    |_|  |_| |_|\___|  |______|_| |_|\__,_|
-                                          
-    """
-
-    for char in ascii_text:
-        st.write(char, end="", flush=True)
-        time.sleep(0.02)  
-
     
 def click_button():
     st.session_state.clicked = True
@@ -931,7 +917,10 @@ def dragon_drops():
 
 
 if "step" not in st.session_state:
-    st.session_state.step = "intro"  #"intro"
+    st.session_state.step = "final_prep"  #"intro"
+    hero.ranger_volley = True
+    hero.defense += 2
+    hero.atk += 2
 step = st.session_state.step
 
 scene_music()
@@ -1248,7 +1237,9 @@ elif step == "dragon_comes_down":
 
     sfx.play("dragon_crash")
 
-    dragon_drops()
+    if "dragon_crash" not in st.session_state:
+        st.session_state.dragon_crash = True
+        dragon_drops()
 
     button("Get Out Of The Way!", next_step= "dragon_comes_down2")
 
@@ -1280,11 +1271,11 @@ elif step == "final_battle_ground_hero":  # === COMBAT LOOP DRAGON ON GROUND ===
     st.session_state.got_rewards = False
 
     if hero.ranger_volley:
-        radio_form("Battle Options - ", final_battle_options_ground_ranger, key = "hero_action", next_step="final_battle_hero_action")
+        radio_form("Battle Options - ", final_battle_options_ground_ranger, key = "hero_action", next_step="final_battle_ground_hero_action")
     elif hero.slayer_sword:
-        radio_form("Battle Options - ", final_battle_options_ground_slayer, key = "hero_action", next_step="final_battle_hero_action")
+        radio_form("Battle Options - ", final_battle_options_ground_slayer, key = "hero_action", next_step="final_battle_ground_hero_action")
     else:
-        radio_form("Battle Options - ", battle_options, key = "hero_action", next_step="final_battle_hero_action")
+        radio_form("Battle Options - ", battle_options, key = "hero_action", next_step="final_battle_ground_hero_action")
 
     scene_image()
 
@@ -1321,6 +1312,12 @@ elif step == "final_battle_ground_hero_action":
                 sfx.play("potion")
             elif "⭐" in action:
                 hero.special_atk_melee(monster)
+                if hero.fire_shield:
+                    sfx.play("dwarf_trap")
+                elif hero.slayer_sword:
+                    sfx.play("slayer_sword")
+                elif hero.ranger_volley:
+                    sfx.play("arrow_volley")
     
     if st.session_state.player_action_complete:
 
@@ -1363,7 +1360,6 @@ elif step == "final_battle_monster_ground":
                 st.write("The dragon quickly spins, hammering you with its tail")
             else:
                 st.write("The dragon snarls and chomps at you, aiming to dismember!")
-            monster.m_std_atk(hero)
 
             monster.m_std_atk(hero)
             sfx.play("dragon_growl")
@@ -1376,7 +1372,10 @@ elif step == "final_battle_monster_ground":
     elif st.session_state.monster_action_complete:
         button("Continue", next_step="final_battle_ground_hero", extra_state={"monster_action_complete": False})
 
-    scene_image()
+    if monster.special != "none" and round % 4 == 0:
+        st.image("images/dragon-ground-fire.webp", caption=None, use_container_width=True)
+    else:
+        scene_image()
 
 
 
@@ -2302,8 +2301,11 @@ elif step == "forest_maze_nav_options":
 
             nav = nav_option_list[st.session_state.random_nav_option]
             st.write(nav[0])
-            button(nav[1], next_step= "maze_random_encounter", extra_state=extra)
-            button(nav[2], next_step= "maze_random_encounter", extra_state=extra)
+            left, right = st.columns(2)
+            with left:
+                button(nav[1], next_step= "maze_random_encounter", extra_state=extra)
+            with right:
+                button(nav[2], next_step= "maze_random_encounter", extra_state=extra)
 
 
 
@@ -2321,6 +2323,8 @@ elif step == "maze_random_encounter":
 
     if encounter == 1:
         if not st.session_state.forest_encounter1:
+            st.image("images/forest-skeleton.webp", caption=None, use_container_width=True)
+
             st.write("You find a skeleton in tattered clothing on the ground leaning against a tree")
             st.write("Vines wrap around in a chilling embrace, claiming it.")
             st.write("The tree may own the body, but you claim the contents of his satchel")
@@ -2332,12 +2336,15 @@ elif step == "maze_random_encounter":
 
     elif encounter == 2:
         if not st.session_state.forest_encounter2:
+            st.image("images/forest-altar.webp", caption=None, use_container_width=True)
+
             st.write("You stumble upon a crumbling altar covered in vines and old runes.")
             st.write("As you touch it, a warm light courses through your body.")
             hero.max_hp += 5
             hero.hp = hero.max_hp
             st.write(f"MAX HP increased by 5 --- {hero.name} hp now {hero.hp}")
             st.session_state.forest_encounter2 = True 
+
         button("Continue", next_step="forest_maze_nav_options", extra_state= {"maze_nav_selected": False})
 
     elif encounter in (3,4):
@@ -2376,6 +2383,8 @@ elif step == "maze_random_encounter":
 
     elif encounter in (9,10):
         if not st.session_state.forest_encounter6:
+            st.image("images/forest-slipped.webp", caption=None, use_container_width=True)
+
             st.write("The path crumbles beneath your feet! You manage to cling to a root, but your gear shifts and a pouch falls into a ravine")
             st.write("Lose 1 10hp health potion")
             hero.potion -= 1
@@ -2725,6 +2734,9 @@ elif step == "return_home2":
     scene_image()
 
 elif step == "travel_animation":
+    sfx = SoundEffectManager()
+
+    sfx.play("footsteps")
 
     if "travelled" not in st.session_state:
         st.session_state.travelled= False
@@ -2872,10 +2884,7 @@ elif step == "dragon_defeated3":
     time.sleep(1.5)
     st.write("Finally, there is peace")
 
-    the_end()
-
-
-
+    scene_image()
 
 elif step == "game_over":
     scene_image()
